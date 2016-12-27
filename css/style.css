@@ -102,6 +102,27 @@ img {
     padding: 20px 0;
 }
 
+#overlay {
+    display: none;
+    background-color: rgba(0, 0, 0, 0.85);
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    text-align: center;
+    z-index: 2;
+}
+
+#overlay-img {
+    margin: auto;
+    width: auto;
+    height: 90vh;
+    opacity: 1;
+    padding: 3em;
+    display: inline-block;
+}
+
 /* Condense on smaller screen */
 @media screen and (max-width: 960px) {
     #output {
