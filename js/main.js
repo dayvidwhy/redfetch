@@ -19,6 +19,7 @@ var debounceDelay = 100;
 init();
 function init() {
     // setup overlay dismiss
+    document.getElementById('img-loading-message').style.display = 'block';
     document.getElementById('overlay').onclick = function() {
         this.style.display = 'none';
         document.body.style.overflow = ''; // let body scroll again
