@@ -1,0 +1,84 @@
+/* Some resets */
+*, *::after, *::before {
+    box-sizing: inherit;
+}
+
+html {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: sans-serif;
+}
+
+body, p {
+    padding: 0;
+    margin: 0;
+}
+
+/* Header for our bit of text */
+header {
+    width: 768px;
+    margin: auto;
+    padding: 20px 0;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #dedede;
+}
+
+header h1 {
+    font-size: 36px;
+    text-align: center;
+}
+
+header p {
+    font-size: 18px;
+}
+
+.row {
+    width: 100%;
+    display: flex;
+}
+
+.image-container {
+    box-sizing: border-box;
+    padding: 8px;
+}
+
+img {
+    width: 100%;
+    height: auto;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+}
+
+.img-loading {
+    -webkit-filter: blur(3px);
+    -moz-filter: blur(3px);
+    -o-filter: blur(3px);
+    -ms-filter: blur(3px);
+    filter: blur(3px);
+}
+
+.img-zoom {
+    cursor: pointer;
+    transition: all 0.1s ease-in-out;
+}
+
+.img-zoom:hover {
+    -ms-transform: scale(1.2)
+    -webkit-transform: scale(1.2);
+    transform: scale(1.2);
+}
+
+#img-loading-message {
+    display: none;
+    text-align: center;
+    font-size: 52px;
+    padding: 20px 0;
+}
+
+/* Condense on smaller screen */
+@media screen and (max-width: 786px) {
+    header {
+        width: 90%;
+        margin: auto;
+    }
+}

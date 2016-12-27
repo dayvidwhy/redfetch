@@ -1,0 +1,20 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="An example of lazily laoding images using the fetch API and pure JavaScript">
+    <meta name="keywords" content="aww, fetch, reddit">
+    <meta name="robots" content="index,follow">
+    <title>Image Fetch</title>
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <link rel="canonical" href="https://dayvidwhy.github.io/image-fetch/">
+</head>
+<body>
+    <header>
+        <h1>Image Fetch</h1>
+        <p>An example of lazily loading images using the fetch API and the onload event attached to images. We gather images using reddit's provided endpoint for /r/aww and render the images on the screen using their thumbnails at first, and then the larger image when it's done loading.</p>
+    </header>
+    <div id="output"></div>
+    <div id="img-loading-message">Loading...</div>
+    <script src="js/main.js" type="text/javascript"></script>
+</body>
+</html>
