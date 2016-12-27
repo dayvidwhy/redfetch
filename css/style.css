@@ -4,8 +4,6 @@
 }
 
 html {
-    padding: 0;
-    margin: 0;
     box-sizing: border-box;
     font-family: sans-serif;
 }
@@ -19,7 +17,8 @@ body, p {
 header {
     width: 768px;
     margin: auto;
-    padding: 20px 0;
+    text-align: center;
+    padding: 0 0 20px 0;
     margin-bottom: 20px;
     border-bottom: 1px solid #dedede;
 }
@@ -27,13 +26,13 @@ header {
 header h1 {
     font-size: 36px;
     font-weight: 100;
-    text-align: center;
 }
 
 header p {
     font-size: 18px;
     font-weight: 100;
     margin: 8px 0;
+    text-align: left;
 }
 
 .banner {
@@ -61,12 +60,10 @@ a:visited, a:hover {
 }
 
 .row {
-    width: 100%;
     display: flex;
 }
 
 .image-container {
-    box-sizing: border-box;
     padding: 8px;
 }
 
@@ -102,6 +99,7 @@ img {
     padding: 20px 0;
 }
 
+/* overlay */
 #overlay {
     display: none;
     background-color: rgba(0, 0, 0, 0.85);
@@ -115,11 +113,9 @@ img {
 }
 
 #overlay-img {
-    margin: auto;
+    height: 80vh; /* for large screen fix by height */
     width: auto;
-    height: 90vh;
-    opacity: 1;
-    padding: 3em;
+    padding: 2em;
     display: inline-block;
 }
 
@@ -134,5 +130,21 @@ img {
     header {
         width: 90%;
         margin: auto;
+    }
+    #overlay-img {
+        width: 90vw; /* for smaller screen fix by width */
+        height: auto;
+    }
+}
+@media screen and (max-width: 500px) {
+    header {
+        width: 95%;
+        margin: auto;
+    }
+    #output {
+        width: 100%;
+    }
+    .image-container {
+        padding: 4px;
     }
 }

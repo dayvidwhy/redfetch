@@ -12,23 +12,25 @@
     <link rel="canonical" href="https://dayvidwhy.github.io/image-fetch/">
 </head>
 <body>
-    <div class="banner">
-        Made by <a href="http://davidyoung.tech">davidyoung.tech</a>
-    </div>
-    <header>
-        <h1>Image Fetch</h1>
-        <p>
-            An example of lazily loading images using the fetch API and the onload event attached to images.
-        </p>
-        <p>
-            We gather images from reddit's API and display them using flexbox. Thumbnails are loaded first and then the full image.
-        </p>
-    </header>
-    <div id="output"></div>
-    <div id="img-loading-message">Loading...</div>
-    <div id="overlay">
-        <img id="overlay-img" src="">
-    </div>
+    <main role="main">
+        <div class="banner">
+            Made by <a href="http://davidyoung.tech">davidyoung.tech</a>
+        </div>
+        <header role="banner">
+            <h1>Image Fetch</h1>
+            <p>
+                An example of lazily loading images using the fetch API and the onload event attached to images.
+            </p>
+            <p>
+                We gather images from reddit's API and display them using flexbox. Thumbnails are loaded first and then the full image.
+            </p>
+        </header>
+        <div id="output"></div>
+        <div id="img-loading-message">Loading...</div>
+        <div id="overlay">
+            <img id="overlay-img" src="">
+        </div>
+    </main>
     <script src="js/main.js" type="text/javascript"></script>
 </body>
 </html>

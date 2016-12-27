@@ -15,8 +15,8 @@ var currentURL = baseURL;
 var debounceTimer = null;
 var debounceDelay = 100;
 
-init();
 // start
+init();
 function init() {
     // setup overlay dismiss
     document.getElementById('overlay').onclick = function() {
