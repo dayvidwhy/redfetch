@@ -117,6 +117,7 @@ img {
     width: auto;
     padding: 2em;
     display: inline-block;
+    box-shadow: none;
 }
 
 /* Condense on smaller screen */
