@@ -87,6 +87,14 @@ function redditLoaded(json) {
     }
     document.addEventListener('scroll', scrollLoad);
     document.getElementById('img-loading-message').style.display = 'none';
+
+    // is this enough to fill the page? Some sneaky recursion to fill it out.
+    var headerHeight = document.getElementsByTagName('header')[0].clientHeight;
+    var outputHeight = output.clientHeight;
+    var bannerHeight = document.querySelector('.banner').clientHeight;
+    if ((headerHeight + outputHeight + bannerHeight) < window.innerHeight) {
+        fetchReddit(currentURL);
+    }
 }
 
 /*
