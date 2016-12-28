@@ -2,14 +2,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="description" content="An example of lazily loading images using the fetch API and pure JavaScript">
-    <meta name="keywords" content="aww, fetch, reddit">
+    <meta name="keywords" content="redfetch, aww, fetch, reddit">
     <meta name="robots" content="index,follow">
-    <title>Image Fetch</title>
+    <title>RedFetch - Reddit Image Fetch</title>
     <meta name="theme-color" content="#ffffff">
     <link rel="shortcut icon" href="favicon.ico?" type="image/x-icon">
     <link rel="icon" href="favicon.ico?" type="image/x-icon">
     <link rel="stylesheet" type="text/css" href="css/style.css">
-    <link rel="canonical" href="https://dayvidwhy.github.io/image-fetch/">
+    <link rel="canonical" href="https://dayvidwhy.github.io/reddit-image-fetch/">
 </head>
 <body>
     <main role="main">
@@ -17,18 +17,24 @@
             Made by <a href="http://davidyoung.tech">davidyoung.tech</a>
         </div>
         <header role="banner">
-            <h1>Image Fetch</h1>
+            <h1><span>Red</span>Fetch</h1>
             <p>
                 An example of lazily loading images using the fetch API and the onload event attached to images.
             </p>
             <p>
-                We gather images from reddit's API and display them using flexbox. Thumbnails are loaded first and then the full image.
+                We gather images from <span>red</span>dit's API and display them using flexbox. Thumbnails are loaded first and then the full image.
             </p>
+            <p>
+                Enter a sub<span>red</span>dit or series of sub<span>red</span>dits separated by spaces below.
+            </p>
+            <input id="input" placeholder="Subreddit: aww cats" type="text">
         </header>
         <div id="output"></div>
         <div id="img-loading-message">Loading...</div>
         <div id="overlay">
-            <img id="overlay-img" src="">
+            <div id="overlay-inner">
+                <img id="overlay-img" src="">
+            </div>
         </div>
     </main>
     <script src="js/main.js" type="text/javascript"></script>

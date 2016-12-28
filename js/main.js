@@ -1,24 +1,36 @@
 /*
 * Global variables. Will make this more object based soon.
 */
-var subreddit = 'aww';
-// Main URL for image feed
-var baseURL = 'https://www.reddit.com/r/' + subreddit + '.json';
 
-// Where we're up to, page 1 is 0, page 2 is 25, page 3 is 50.
-var count = 0;
+// Keep track of the subreddit we want to scrape for images
+var subreddit;
+
+// Main URL for image feed
+var baseURL;
 
 // The current url starts off as the base URL, then changes
-var currentURL = baseURL;
+var currentURL;
 
 // Debounce the scroll function
 var debounceTimer = null;
 var debounceDelay = 100;
 
-// start
-init();
+// Get things going
+document.getElementById('input').addEventListener('keypress', function (e) {
+    var key = e.which || e.keyCode;
+    if (key === 13) { // listen for enter key
+      var sub = this.value.split(' ').join('+');
+      subreddit = sub;
+      baseURL = 'https://www.reddit.com/r/' + sub + '.json';
+      currentURL = baseURL;
+      init();
+    }
+});
+
+/* Start off a new query */
 function init() {
     // setup overlay dismiss
+    document.getElementById('output').innerHTML = '';
     document.getElementById('img-loading-message').style.display = 'block';
     document.getElementById('overlay').onclick = function() {
         this.style.display = 'none';
@@ -45,8 +57,7 @@ function fetchReddit(currentURL) {
 * When our JSON successfully loads parse it and render images on the page.
 */
 function redditLoaded(json) {
-    count += 25;
-    currentURL = baseURL + '?count=' + count + '&after=' + json.data.after;
+    currentURL = baseURL + '?after=' + json.data.after;
     var output = document.getElementById("output");
     var len = json.data.children.length;
     var str = '';
@@ -64,12 +75,9 @@ function redditLoaded(json) {
         var currentImages = json.data.children[i].data.preview.images[0];
         var currentResolutions = currentImages.resolutions;
         var largeResolution = currentResolutions[Math.floor(currentResolutions.length - 1 / 2)];
-
         var width = largeResolution.width;
         var height = largeResolution.height;
         var aspect = width / height;
-        
-        // make the container for the image
         container = document.createElement('div');
         container.className = 'image-container';
         container.style.flex = aspect;
@@ -85,9 +93,9 @@ function redditLoaded(json) {
         // when it loads change the src to the bigger one
         image.onload = (function(image, largeResolution) {
             return function() {
-                imageLoad(image, largeResolution.url);
+                imageLoad(image, largeResolution);
             };
-        })(image, largeResolution);
+        })(image, largeResolution.url);
 
         // if it fails to load delete the element
         image.onerror = imageFail;
