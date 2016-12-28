@@ -1,4 +1,4 @@
-![RedFetch Logo](/images/redfetch.png "RedFetch Logo")
+![RedFetch Logo](/images/redfetch.jpg "RedFetch Logo")
 
 ## Getting Started
 
