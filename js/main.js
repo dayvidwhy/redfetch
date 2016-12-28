@@ -150,12 +150,14 @@ function imageLoad(img, large) {
     large = replaceHTMLEscape(large);
     img.src = large;
     img.onload = function() {
+        // when the larger version loads, apply the zoom effect
         this.className = 'img-zoom';
-    };
-    img.onclick = function() {
-        // display the overlay
-        document.getElementById('overlay').style.display = 'block';
-        document.getElementById('overlay-img').src = this.getAttribute('large-image');
-        document.body.style.overflow = 'hidden'; // don't let body scroll
+        // and enable the overlay click function
+        this.onclick = function() {
+            // display the overlay
+            document.getElementById('overlay').style.display = 'block';
+            document.getElementById('overlay-img').src = this.getAttribute('large-image');
+            document.body.style.overflow = 'hidden'; // don't let body scroll
+        };
     };
 }
