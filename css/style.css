@@ -30,7 +30,7 @@ header h1 {
     font-weight: 400;
 }
 
-header h1 span, p > span {
+span {
     color: #c0392b;
     font-weight: bold;
 }
