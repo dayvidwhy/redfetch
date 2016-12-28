@@ -70,10 +70,16 @@ function redditLoaded(json) {
             row.className = 'row';
         }
 
-        // Create the image container
+        /* Create the image container. */
+        // Does this element have preview images?
         if (!json.data.children[i].data.preview) continue;
         var currentImages = json.data.children[i].data.preview.images[0];
+
+        // If the resolutions array is empty just skip the image
+        if (currentImages.resolutions.length === 0) continue;
         var currentResolutions = currentImages.resolutions;
+
+        // Work out image aspect
         var largeResolution = currentResolutions[Math.floor(currentResolutions.length - 1 / 2)];
         var width = largeResolution.width;
         var height = largeResolution.height;
@@ -87,6 +93,7 @@ function redditLoaded(json) {
         var thumbnail = replaceHTMLEscape(currentImages.resolutions[0].url);
         image.src = thumbnail;
         image.className = 'img-loading';
+        
         // Set the large image for our overlay
         image.setAttribute('large-image', replaceHTMLEscape(currentImages.source.url));
         
