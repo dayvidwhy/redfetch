@@ -1,5 +1,4 @@
-# Lazy Loading with Fetch
-And how it easily replaces jQuery.
+![RedFetch Logo](/images/redfetch.png "RedFetch Logo")
 
 ## Getting Started
 
@@ -14,6 +13,7 @@ Just some holiday hacking.
 * HTML
 * CSS
 * JavaScript
+* [Fetch API](https://developer.mozilla.org/en/docs/Web/API/Fetch_API)
 
 ## Contributing
 I do not accept contributions to this project, it is a personal project that I intend to update myself in the future.
