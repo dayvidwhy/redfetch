@@ -3,13 +3,13 @@
 */
 
 // Keep track of the subreddit we want to scrape for images
-var subreddit;
+var subreddit = 'aww+puppies';
 
 // Main URL for image feed
-var baseURL;
+var baseURL = 'https://www.reddit.com/r/' + subreddit + '.json';
 
 // The current url starts off as the base URL, then changes
-var currentURL;
+var currentURL = baseURL;
 
 // Debounce the scroll function
 var debounceTimer = null;
@@ -28,6 +28,7 @@ document.getElementById('input').addEventListener('keypress', function (e) {
 });
 
 /* Start off a new query */
+init();
 function init() {
     // setup overlay dismiss
     document.getElementById('output').innerHTML = '';
