@@ -26,13 +26,18 @@ header {
 
 header h1 {
     font-size: 56px;
-    margin: 16px 0;
+    margin: 16px 0 0 0;
     font-weight: 400;
 }
 
-header h1 span, p span {
+header h1 span, p > span {
     color: #c0392b;
     font-weight: bold;
+}
+
+header h2 {
+    margin: 0 0 16px 0;
+    font-weight: 400;
 }
 
 header p {
@@ -40,6 +45,7 @@ header p {
     margin: 8px 0;
     text-align: left;
     color: #7f8c8d;
+    line-height: 1.5;
 }
 
 .banner {
@@ -171,5 +177,8 @@ input[type=text] {
     }
     input[type=text] {
         width: 100%;
+    }
+    header p {
+        font-size: 1em;
     }
 }
