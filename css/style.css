@@ -26,8 +26,8 @@ header {
 
 header h1 {
     font-size: 56px;
-    font-weight: 100;
     margin: 16px 0;
+    font-weight: 400;
 }
 
 header h1 span, p span {
@@ -37,7 +37,6 @@ header h1 span, p span {
 
 header p {
     font-size: 18px;
-    font-weight: 100;
     margin: 8px 0;
     text-align: left;
     color: #7f8c8d;
