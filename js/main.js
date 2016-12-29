@@ -20,6 +20,10 @@ document.getElementById('input').addEventListener('keypress', function (e) {
     var key = e.which || e.keyCode;
     if (key === 13) { // listen for enter key
       var sub = this.value.split(' ').join('+');
+      if (sub.length === 0) {
+        document.getElementById('output').innerHTML = 'Please search for something.';
+        return;
+      }
       subreddit = sub;
       baseURL = 'https://www.reddit.com/r/' + sub + '.json';
       currentURL = baseURL;
@@ -29,15 +33,25 @@ document.getElementById('input').addEventListener('keypress', function (e) {
 
 /* Start off a new query */
 init();
+
+/*
+* Setup overlay handler and begin searching.
+*/
 function init() {
     // setup overlay dismiss
-    document.getElementById('output').innerHTML = '';
-    document.getElementById('img-loading-message').style.display = 'block';
-    document.getElementById('overlay').onclick = function() {
-        this.style.display = 'none';
-        document.body.style.overflow = ''; // let body scroll again
-    };
-    fetchReddit(currentURL);
+    try {
+        document.getElementById('output').innerHTML = '';
+        document.getElementById('img-loading-message').style.display = 'block';
+        document.getElementById('overlay').onclick = function() {
+            this.style.display = 'none';
+            document.body.style.overflow = ''; // let body scroll again
+        };
+        fetchReddit(currentURL);
+    } catch(err) { // gotta catch em all. #pokemon-antipattern
+        var error = document.createElement('h2');
+        error.innerHTML = 'Something went super wrong, try refreshing.';
+        document.getElementById("output").appendChild(error);
+    }
 }
 
 /*
@@ -58,11 +72,12 @@ function fetchReddit(currentURL) {
 * When our JSON successfully loads parse it and render images on the page.
 */
 function redditLoaded(json) {
+    console.log(json);
     currentURL = baseURL + '?after=' + json.data.after;
     var output = document.getElementById("output");
     var len = json.data.children.length;
     var str = '';
-    var row, container, image;
+    var row, container, image, element;
     for (var i = 1; i < len; i++) {
         if ((i - 1) % 4 === 0) {
             // starting a row
@@ -70,23 +85,24 @@ function redditLoaded(json) {
             row = document.createElement('div');
             row.className = 'row';
         }
-
+        element = json.data.children[i];
         /* Create the image container. */
         // Does this element have preview images?
-        if (!json.data.children[i].data.preview) continue;
-        var currentImages = json.data.children[i].data.preview.images[0];
+        if (!element.data.preview) continue;
+        var currentImages = element.data.preview.images[0];
 
         // If the resolutions array is empty just skip the image
         if (currentImages.resolutions.length === 0) continue;
         var currentResolutions = currentImages.resolutions;
 
-        // Work out image aspect
+        // Work out image aspect, pick something from the middle of the array
         var largeResolution = currentResolutions[Math.floor(currentResolutions.length - 1 / 2)];
         var width = largeResolution.width;
         var height = largeResolution.height;
         var aspect = width / height;
         container = document.createElement('div');
         container.className = 'image-container';
+        // let's our images be tiled
         container.style.flex = aspect;
 
         // Create the image with thumbnail
@@ -96,7 +112,15 @@ function redditLoaded(json) {
         image.className = 'img-loading';
         
         // Set the large image for our overlay
-        image.setAttribute('large-image', replaceHTMLEscape(currentImages.source.url));
+        var sourceImage;
+        if (element.data.url.indexOf('.gifv') > 0) {
+            // it's an imgur gifv image
+            sourceImage = element.data.url.substring(0, element.data.url.length - 1);
+        } else {
+            // it's something plain, or gyfcat
+            sourceImage = replaceHTMLEscape(currentImages.source.url);
+        }
+        image.setAttribute('large-image', sourceImage);
         
         // when it loads change the src to the bigger one
         image.onload = (function(image, largeResolution) {

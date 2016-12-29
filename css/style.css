@@ -50,7 +50,7 @@ header p {
 
 .banner {
     width: 100%;
-    background-color: #cea9a9;
+    background-color: #c0392b;
     padding: 10px 0;
     font-size: 16px;
     text-align: center;
@@ -66,6 +66,8 @@ a:visited, a:hover {
 }
 
 #output {
+    font-size: 18px;
+    color: #7f8c8d;
     width: 960px;
     margin: auto;
 }
@@ -162,6 +164,7 @@ input[type=text] {
     header {
         width: 90%;
         margin: auto;
+        margin-bottom: 20px;
     }
 }
 @media screen and (max-width: 500px) {
