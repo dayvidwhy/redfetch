@@ -75,8 +75,7 @@ function redditLoaded(json) {
     currentURL = baseURL + '?after=' + json.data.after;
     var output = document.getElementById("output");
     var len = json.data.children.length;
-    var str = '';
-    var row, container, image, element;
+    var row, container, image, element, sourceImage;
     for (var i = 1; i < len; i++) {
         if ((i - 1) % 4 === 0) {
             // starting a row
@@ -109,9 +108,7 @@ function redditLoaded(json) {
         var thumbnail = replaceHTMLEscape(currentImages.resolutions[0].url);
         image.src = thumbnail;
         image.className = 'img-loading';
-        
         // Set the large image for our overlay
-        var sourceImage;
         if (element.data.url.indexOf('.gifv') > 0) {
             // it's an imgur gifv image
             sourceImage = element.data.url.substring(0, element.data.url.length - 1);
@@ -120,29 +117,32 @@ function redditLoaded(json) {
             sourceImage = replaceHTMLEscape(currentImages.source.url);
         }
         image.setAttribute('large-image', sourceImage);
-        
         // when it loads change the src to the bigger one
         image.onload = (function(image, largeResolution) {
             return function() {
                 imageLoad(image, largeResolution);
             };
         })(image, largeResolution.url);
-
         // if it fails to load delete the element
         image.onerror = imageFail;
-
         // append to dom as we go
         container.appendChild(image);
-        row.appendChild(container);
-        // ensure we append the final row
-        if (i === 24) {
-            output.appendChild(row);
+
+        var title = document.createElement('p');
+        var titleText = element.data.title;
+        if (titleText.length > 25) {
+            titleText = titleText.substring(0, 24) + '...';
         }
+        title.innerHTML = titleText;
+        title.className = 'img-title';
+        container.appendChild(title);
+        row.appendChild(container);
     }
+    output.appendChild(row); // append last row
     document.addEventListener('scroll', scrollLoad);
     document.getElementById('img-loading-message').style.display = 'none';
 
-    // is this enough to fill the page? Some sneaky recursion to fill it out.
+    // is this enough to fill the page? Some sneaky recursion to fill it out. NB: fires too soon
     var headerHeight = document.getElementsByTagName('header')[0].clientHeight;
     var outputHeight = output.clientHeight;
     var bannerHeight = document.querySelector('.banner').clientHeight;

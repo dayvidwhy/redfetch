@@ -30,11 +30,6 @@ header h1 {
     font-weight: 400;
 }
 
-span {
-    color: #c0392b;
-    font-weight: bold;
-}
-
 header h2 {
     margin: 0 0 16px 0;
     font-weight: 400;
@@ -48,13 +43,9 @@ header p {
     line-height: 1.5;
 }
 
-.banner {
-    width: 100%;
-    background-color: #c0392b;
-    padding: 10px 0;
-    font-size: 16px;
-    text-align: center;
-    color: white;
+span {
+    color: #c0392b;
+    font-weight: bold;
 }
 
 a {
@@ -65,6 +56,15 @@ a:visited, a:hover {
     color: rgb(230, 230, 230);
 }
 
+.banner {
+    width: 100%;
+    background-color: #c0392b;
+    padding: 10px 0;
+    font-size: 16px;
+    text-align: center;
+    color: white;
+}
+
 #output {
     font-size: 18px;
     color: #7f8c8d;
@@ -72,18 +72,36 @@ a:visited, a:hover {
     margin: auto;
 }
 
+/* Grid */
 .row {
     display: flex;
 }
 
 .image-container {
-    padding: 8px;
+    margin: 8px;
+    position: relative;
 }
 
 img {
     width: 100%;
     height: auto;
     box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+}
+
+.img-title {
+    display: none; /* start off hidden */
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    padding: 4px;
+    width: 100%;
+    color: #FFF;
+    background-color: rgba(0, 0, 0, 0.3);
+    font-size: 13px;
+}
+
+.image-container:hover .img-title {
+    display: block;
 }
 
 .img-loading {
@@ -100,9 +118,7 @@ img {
 }
 
 .img-zoom:hover {
-    -ms-transform: scale(1.2)
-    -webkit-transform: scale(1.2);
-    transform: scale(1.2);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
 }
 
 #img-loading-message {
@@ -156,15 +172,18 @@ input[type=text] {
 /* Condense on smaller screen */
 @media screen and (max-width: 960px) {
     #output {
-        width: 90%;
+        width: 95%;
         margin: auto;
     }
 }
-@media screen and (max-width: 786px) {
+@media screen and (max-width: 768px) {
     header {
-        width: 90%;
+        width: 95%;
         margin: auto;
         margin-bottom: 20px;
+    }
+    #output {
+        width: 100%;
     }
 }
 @media screen and (max-width: 500px) {
@@ -172,11 +191,11 @@ input[type=text] {
         width: 95%;
         margin: auto;
     }
-    #output {
+    #overlay-inner {
         width: 100%;
     }
     .image-container {
-        padding: 4px;
+        margin: 4px 2px;
     }
     input[type=text] {
         width: 100%;
