@@ -116,7 +116,7 @@ function redditLoaded(json) {
             // it's something plain, or gyfcat
             sourceImage = replaceHTMLEscape(currentImages.source.url);
         }
-        image.setAttribute('large-image', sourceImage);
+        container.setAttribute('large-image', sourceImage);
         // when it loads change the src to the bigger one
         image.onload = (function(image, largeResolution) {
             return function() {
@@ -139,9 +139,8 @@ function redditLoaded(json) {
         row.appendChild(container);
     }
     output.appendChild(row); // append last row
-    document.addEventListener('scroll', scrollLoad);
     document.getElementById('img-loading-message').style.display = 'none';
-
+    document.addEventListener('scroll', scrollLoad);
     // is this enough to fill the page? Some sneaky recursion to fill it out. NB: fires too soon
     var headerHeight = document.getElementsByTagName('header')[0].clientHeight;
     var outputHeight = output.clientHeight;
@@ -187,8 +186,9 @@ function imageLoad(img, large) {
     img.onload = function() {
         // when the larger version loads, apply the zoom effect
         this.className = 'img-zoom';
-        // and enable the overlay click function
-        this.onclick = function() {
+        // and enable the overlay click function to container
+        this.parentElement.className += ' pointer img-zoom';
+        this.parentElement.onclick = function() {
             // display the overlay
             document.getElementById('overlay').style.display = 'block';
             document.getElementById('overlay-img').src = this.getAttribute('large-image');

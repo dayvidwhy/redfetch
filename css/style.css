@@ -82,6 +82,10 @@ a:visited, a:hover {
     position: relative;
 }
 
+.pointer {
+    cursor: pointer;
+}
+
 img {
     width: 100%;
     height: auto;
@@ -113,7 +117,6 @@ img {
 }
 
 .img-zoom {
-    cursor: pointer;
     transition: all 0.1s ease-in-out;
 }
 
