@@ -72,7 +72,6 @@ function fetchReddit(currentURL) {
 * When our JSON successfully loads parse it and render images on the page.
 */
 function redditLoaded(json) {
-    console.log(json);
     currentURL = baseURL + '?after=' + json.data.after;
     var output = document.getElementById("output");
     var len = json.data.children.length;
@@ -135,6 +134,10 @@ function redditLoaded(json) {
         // append to dom as we go
         container.appendChild(image);
         row.appendChild(container);
+        // ensure we append the final row
+        if (i === 24) {
+            output.appendChild(row);
+        }
     }
     document.addEventListener('scroll', scrollLoad);
     document.getElementById('img-loading-message').style.display = 'none';
