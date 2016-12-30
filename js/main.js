@@ -31,8 +31,19 @@ document.getElementById('input').addEventListener('keypress', function (e) {
     }
 });
 
-/* Start off a new query */
-init();
+/* Check to see if browser supports fetch.
+ * If not, polyfill it then start.
+*/
+if (window.fetch) {
+    init();
+} else {
+    var fetchPoly = document.createElement('script');
+    fetchPoly.src = 'https://cdnjs.cloudflare.com/ajax/libs/fetch/2.0.1/fetch.min.js';
+    fetchPoly.onload = function() {
+        init();
+    }
+    document.head.appendChild(fetchPoly);
+}
 
 /*
 * Setup overlay handler and begin searching.
