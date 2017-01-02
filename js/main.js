@@ -1,54 +1,67 @@
 /*
 * Global variables. Will make this more object based soon.
 */
-
-// Keep track of the subreddit we want to scrape for images
-var subreddit = 'aww+puppies';
-
-// Main URL for image feed
-var baseURL = 'https://www.reddit.com/r/' + subreddit + '.json';
-
-// The current url starts off as the base URL, then changes
-var currentURL = baseURL;
-
-// Debounce the scroll function
-var debounceTimer = null;
+var search = 'aww+puppies'; // Keep track of the subreddit we want to scrape for images
+var searchArea = 'r'; // Display subreddits first
+var baseURL = 'https://www.reddit.com/' + searchArea + '/' + search + '.json'; // Main URL for image feed
+var currentURL = baseURL; // The current url starts off as the base URL, then changes
+var debounceTimer = null; // Debounce the scroll function
 var debounceDelay = 100;
 
-// Get things going
-document.getElementById('input').addEventListener('keypress', function (e) {
-    var key = e.which || e.keyCode;
-    if (key === 13) { // listen for enter key
-      var sub = this.value.split(' ').join('+');
-      if (sub.length === 0) {
-        document.getElementById('output').innerHTML = 'Please search for something.';
-        return;
-      }
-      subreddit = sub;
-      baseURL = 'https://www.reddit.com/r/' + sub + '.json';
-      currentURL = baseURL;
-      init();
-    }
-});
-
-/* Check to see if browser supports fetch.
- * If not, polyfill it then start.
+/* 
+* Check to see if browser supports fetch.
+* If not, polyfill it then start.
 */
-if (window.fetch) {
-    init();
-} else {
-    var fetchPoly = document.createElement('script');
-    fetchPoly.src = 'https://cdnjs.cloudflare.com/ajax/libs/fetch/2.0.1/fetch.min.js';
-    fetchPoly.onload = function() {
-        init();
+function init() {
+    if (window.fetch) {
+        bindListeners();
+    } else {
+        var fetchPoly = document.createElement('script');
+        fetchPoly.src = 'https://cdnjs.cloudflare.com/ajax/libs/fetch/2.0.1/fetch.min.js';
+        fetchPoly.onload = function() {
+            bindListeners();
+        }
+        document.head.appendChild(fetchPoly);
     }
-    document.head.appendChild(fetchPoly);
+}
+
+// okgo
+init();
+
+// Apply event listeners
+function bindListeners() {
+    document.getElementById('input').addEventListener('keypress', function (e) {
+        var key = e.which || e.keyCode;
+        if (key === 13) { // listen for enter key
+          var sub = this.value.split(' ').join('+');
+          if (sub.length === 0) {
+            document.getElementById('output').innerHTML = 'Please search for something.';
+            return;
+          }
+          search = sub;
+          searchArea = 'r';
+          baseURL = 'https://www.reddit.com/r/' + sub + '.json';
+          currentURL = baseURL;
+          beginSearch();
+        }
+    });
+
+    // out overlays image click
+    document.getElementById('overlay-user').addEventListener('click', function(e) {
+        searchArea = 'user';
+        search = this.getAttribute('author');
+        baseURL = 'https://www.reddit.com/' + searchArea + '/' + search + '/submitted.json';
+        currentURL = baseURL;
+        beginSearch();
+    });
+
+    beginSearch(); // auto search on load
 }
 
 /*
 * Setup overlay handler and begin searching.
 */
-function init() {
+function beginSearch() {
     // setup overlay dismiss
     try {
         document.getElementById('output').innerHTML = '';
@@ -94,8 +107,9 @@ function redditLoaded(json) {
             row = document.createElement('div');
             row.className = 'row';
         }
+
         element = json.data.children[i];
-        /* Create the image container. */
+
         // Does this element have preview images?
         if (!element.data.preview) continue;
         var currentImages = element.data.preview.images[0];
@@ -106,19 +120,14 @@ function redditLoaded(json) {
 
         // Work out image aspect, pick something from the middle of the array
         var largeResolution = currentResolutions[Math.floor(currentResolutions.length - 1 / 2)];
-        var width = largeResolution.width;
-        var height = largeResolution.height;
-        var aspect = width / height;
-        container = document.createElement('div');
-        container.className = 'image-container';
-        // let's our images be tiled
-        container.style.flex = aspect;
+        var aspect = largeResolution.width / largeResolution.height;
 
         // Create the image with thumbnail
         image = new Image();
         var thumbnail = replaceHTMLEscape(currentImages.resolutions[0].url);
         image.src = thumbnail;
         image.className = 'img-loading';
+
         // Set the large image for our overlay
         if (element.data.url.indexOf('.gifv') > 0) {
             // it's an imgur gifv image
@@ -127,9 +136,7 @@ function redditLoaded(json) {
             // it's something plain, or gyfcat
             sourceImage = replaceHTMLEscape(currentImages.source.url);
         }
-        container.setAttribute('large-image', sourceImage);
-        var titleText = element.data.title || 'no title';
-        container.setAttribute('title-text', titleText);
+
         // when it loads change the src to the bigger one
         image.onload = (function(image, largeResolution) {
             return function() {
@@ -138,21 +145,34 @@ function redditLoaded(json) {
         })(image, largeResolution.url);
         // if it fails to load delete the element
         image.onerror = imageFail;
-        // append to dom as we go
+
+        // Build the container
+        container = document.createElement('div');
+        container.className = 'image-container';
+        // let's our images be tiled
+        container.style.flex = aspect;
+        container.setAttribute('large-image', sourceImage);
+        var titleText = element.data.title;
+        container.setAttribute('title-text', titleText);
+        container.setAttribute('author', element.data.author);
         container.appendChild(image);
 
+        // Add title overlay to image
         var title = document.createElement('p');
         if (titleText.length > 25) {
             titleText = titleText.substring(0, 24) + '...';
         }
         title.innerHTML = titleText;
         title.className = 'img-title';
+
+        // add to dom
         container.appendChild(title);
         row.appendChild(container);
     }
     output.appendChild(row); // append last row
     document.getElementById('img-loading-message').style.display = 'none';
     document.addEventListener('scroll', scrollLoad);
+
     // is this enough to fill the page? Some sneaky recursion to fill it out. NB: fires too soon
     var headerHeight = document.getElementsByTagName('header')[0].clientHeight;
     var outputHeight = output.clientHeight;
@@ -163,17 +183,22 @@ function redditLoaded(json) {
 }
 
 /*
-* Could bring in Lodash, or just do it the easy way.
+* Debounce scroll event.
 */
 function scrollLoad(event) {
     clearTimeout(debounceTimer);
-    debounceTimer = setTimeout(function() {
-        if (document.body.scrollHeight == document.body.scrollTop + window.innerHeight) {
-            document.removeEventListener('scroll', scrollLoad);
-            fetchReddit(currentURL);
-            document.getElementById('img-loading-message').style.display = 'block';
-        }
-    }, debounceDelay);
+    debounceTimer = setTimeout(testScrollHeight, debounceDelay);
+}
+
+/*
+* Function to see if we have scrolled far enough down the page.
+*/
+function testScrollHeight() {
+    if (document.body.scrollHeight == document.body.scrollTop + window.innerHeight) {
+        document.removeEventListener('scroll', scrollLoad);
+        fetchReddit(currentURL);
+        document.getElementById('img-loading-message').style.display = 'block';
+    }
 }
 
 /*
@@ -183,6 +208,9 @@ function imageFail() {
     this.outerHTML = '';
 }
 
+/*
+* Takes a string and replaces HTML escaped &
+*/
 function replaceHTMLEscape(string) {
     return string.split('&amp;').join('&');
 }
@@ -200,12 +228,21 @@ function imageLoad(img, large) {
         this.className = 'img-zoom';
         // and enable the overlay click function to container
         this.parentElement.className += ' pointer img-zoom';
-        this.parentElement.onclick = function() {
-            // display the overlay
-            document.getElementById('overlay').style.display = 'block';
-            document.getElementById('overlay-title').innerHTML = this.getAttribute('title-text');
-            document.getElementById('overlay-img').src = this.getAttribute('large-image');
-            document.body.style.overflow = 'hidden'; // don't let body scroll
-        };
+        this.parentElement.onclick = containerClick;
     };
+}
+
+/*
+* When a user clicks on one of the images.
+*/
+function containerClick() {
+    // display the overlay with options
+    document.getElementById('overlay').style.display = 'block';
+    document.getElementById('overlay-title').innerHTML = this.getAttribute('title-text');
+    document.getElementById('overlay-img').src = this.getAttribute('large-image');
+    var author = this.getAttribute('author');
+    var userButton = document.getElementById('overlay-user');
+    userButton.setAttribute('author', author);
+    userButton.innerHTML = 'By /user/' + author;
+    document.body.style.overflow = 'hidden'; // don't let body scroll
 }
