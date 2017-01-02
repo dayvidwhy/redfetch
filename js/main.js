@@ -58,7 +58,7 @@ function init() {
             document.body.style.overflow = ''; // let body scroll again
         };
         fetchReddit(currentURL);
-    } catch(err) { // gotta catch em all. #pokemon-antipattern
+    } catch(_) { // gotta catch em all. #pokemon-antipattern
         var error = document.createElement('h2');
         error.innerHTML = 'Something went super wrong, try refreshing.';
         document.getElementById("output").appendChild(error);
