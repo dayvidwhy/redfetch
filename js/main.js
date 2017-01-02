@@ -128,6 +128,8 @@ function redditLoaded(json) {
             sourceImage = replaceHTMLEscape(currentImages.source.url);
         }
         container.setAttribute('large-image', sourceImage);
+        var titleText = element.data.title || 'no title';
+        container.setAttribute('title-text', titleText);
         // when it loads change the src to the bigger one
         image.onload = (function(image, largeResolution) {
             return function() {
@@ -140,7 +142,6 @@ function redditLoaded(json) {
         container.appendChild(image);
 
         var title = document.createElement('p');
-        var titleText = element.data.title;
         if (titleText.length > 25) {
             titleText = titleText.substring(0, 24) + '...';
         }
@@ -202,6 +203,7 @@ function imageLoad(img, large) {
         this.parentElement.onclick = function() {
             // display the overlay
             document.getElementById('overlay').style.display = 'block';
+            document.getElementById('overlay-title').innerHTML = this.getAttribute('title-text');
             document.getElementById('overlay-img').src = this.getAttribute('large-image');
             document.body.style.overflow = 'hidden'; // don't let body scroll
         };

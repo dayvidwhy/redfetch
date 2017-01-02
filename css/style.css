@@ -165,6 +165,15 @@ img {
     display: inline-block;
     box-shadow: none;
 }
+
+#overlay-title {
+    width: 90%;
+    margin: auto;
+    background-color: inherit;
+    color: #FFF;
+    margin-bottom: 16px;
+    font-size: 1.5em;
+}
 /* End overlay */
 
 input[type=text] {
