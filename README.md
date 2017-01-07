@@ -1,4 +1,4 @@
-![RedFetch Logo](/images/redfetch.jpg "RedFetch Logo")
+![RedFetch Logo](/images/redfetch.png "RedFetch Logo")
 
 ## Getting Started
 I made this as a fun way of understanding the new fetch API and loading images after initially loading a thumbnail image.

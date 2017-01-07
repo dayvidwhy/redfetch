@@ -49,6 +49,10 @@ header p {
     font-weight: 400;
 }
 
+header img {
+    width: 60%;
+}
+
 span {
     color: #c0392b;
     font-weight: bold;
@@ -94,8 +98,6 @@ a:visited, a:hover {
 
 img {
     width: 100%;
-    height: auto;
-    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
 }
 
 .img-title {
@@ -123,10 +125,12 @@ img {
 }
 
 .img-zoom {
+    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
     transition: all 0.1s ease-in-out;
 }
 
 .img-zoom:hover {
+    
     box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
 }
 
@@ -197,17 +201,39 @@ img {
 }
 /* End overlay */
 
-input[type=text] {
+/* Input field */
+.inputs {
+    margin-top: 16px;
+    display: flex;
+}
+
+.inputs input[type=text] {
     display: inline-block;
     padding: 8px;
-    margin-top: 16px;
     border: 1px solid #ccc;
     outline: none;
     font-size: 24px;
     cursor: inherit;
     width: 90%;
     font-weight: 400;
+    flex: 1;
 }
+
+.inputs button {
+    padding: 8px;
+    background-color: #FFF;
+    border: 1px solid #ccc;
+    border-left: none;
+    font-size: 24px;
+    cursor: pointer;
+    background-color: hsla(31,15%,50%,.1);
+}
+
+.inputs button:hover {
+    background-color: #c0392b;
+    color: #FFF;
+}
+/* End Inputs */
 
 /* Condense on smaller screen */
 @media screen and (max-width: 960px) {

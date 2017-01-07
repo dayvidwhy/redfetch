@@ -28,22 +28,37 @@ function init() {
 // okgo
 init();
 
-// Apply event listeners
+/*
+* Check the input field after enter is hit or search button clicked.
+*/
+function checkInputs(ele) {
+    var sub = ele.value.trim().replace(/\s\s+/g, ' ').split(' ').join('+');
+    console.log(sub);
+    if (sub.length === 0) {
+        ele.placeholder = 'Please search for something.';
+        return;
+    }
+    search = sub;
+    searchArea = 'r';
+    baseURL = 'https://www.reddit.com/r/' + sub + '.json';
+    currentURL = baseURL;
+    beginSearch();
+}
+
+/*
+* Apply event listeners.
+*/
 function bindListeners() {
     document.getElementById('input').addEventListener('keypress', function (e) {
+        this.placeholder = '';
         var key = e.which || e.keyCode;
         if (key === 13) { // listen for enter key
-          var sub = this.value.split(' ').join('+');
-          if (sub.length === 0) {
-            document.getElementById('output').innerHTML = 'Please search for something.';
-            return;
-          }
-          search = sub;
-          searchArea = 'r';
-          baseURL = 'https://www.reddit.com/r/' + sub + '.json';
-          currentURL = baseURL;
-          beginSearch();
+          checkInputs(this);
         }
+    });
+
+    document.getElementById('input-search').addEventListener('click', function (e) {
+        checkInputs(document.getElementById('input'));
     });
 
     // out overlays image click
@@ -153,6 +168,7 @@ function redditLoaded(json) {
         container.style.flex = aspect;
         container.setAttribute('large-image', sourceImage);
         var titleText = element.data.title;
+        image.alt = titleText;
         container.setAttribute('title-text', titleText);
         container.setAttribute('author', element.data.author);
         container.appendChild(image);
@@ -225,7 +241,7 @@ function imageLoad(img, large) {
     img.src = large;
     img.onload = function() {
         // when the larger version loads, apply the zoom effect
-        this.className = 'img-zoom';
+        this.className = '';
         // and enable the overlay click function to container
         this.parentElement.className += ' pointer img-zoom';
         this.parentElement.onclick = containerClick;
@@ -239,6 +255,7 @@ function containerClick() {
     // display the overlay with options
     document.getElementById('overlay').style.display = 'block';
     document.getElementById('overlay-title').innerHTML = this.getAttribute('title-text');
+    document.getElementById('overlay-img').alt = this.getAttribute('title-text');
     document.getElementById('overlay-img').src = this.getAttribute('large-image');
     var author = this.getAttribute('author');
     var userButton = document.getElementById('overlay-user');

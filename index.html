@@ -19,15 +19,17 @@
             Made by <a href="http://davidyoung.tech">davidyoung.tech</a> | Source on <a href="https://github.com/dayvidwhy/redfetch">Github</a>
         </div>
         <header role="banner">
-            <h1><span>Red</span>Fetch</h1>
-            <h2><span>Red</span>dit Image Viewer</h2>
+            <img src="images/redfetch.png">
             <p>
-                An example of lazily loading images using the fetch API and the onload event attached to images. We gather images from <span>red</span>dit's API and display them using flexbox. Thumbnails are loaded first and then the full image.
+                An example of lazily loading images using fetch and the onload event attached to images. We gather images from <span>red</span>dit's API and display them using flexbox. Thumbnails are loaded first and then the full image.
             </p>
             <p>
                 Enter a sub<span>red</span>dit or series of sub<span>red</span>dits separated by spaces below.
             </p>
-            <input id="input" placeholder="aww puppies" type="text">
+            <div class="inputs">
+                <input id="input" placeholder="aww puppies" type="text">
+                <button id='input-search'>Search</button>
+            </div>
         </header>
         <div id="output">
         </div>
@@ -35,7 +37,7 @@
         <div id="overlay">
             <div id="overlay-inner">
                 <div id="overlay-title"></div>
-                <img id="overlay-img" src="">
+                <img id="overlay-img" src="" alt="">
                 <div class="overlay-user-outer">
                     <button id="overlay-user"></button>
                 </div>
