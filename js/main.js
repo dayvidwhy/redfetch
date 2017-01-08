@@ -123,9 +123,7 @@ function beginSearch() {
 * Initiate our Reddit request
 */
 function fetchReddit(currentURL) {
-    console.log(currentURL);
     fetch(currentURL).then(function(response) {
-        console.log(response);
         if (response.status === 302 || response.status === 404) {
             document.getElementById('img-loading-message').innerHTML = 'No Results';
             return;
