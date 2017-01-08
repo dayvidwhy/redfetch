@@ -23,9 +23,8 @@ header {
     width: 768px;
     margin: auto;
     text-align: center;
-    padding: 0 0 20px 0;
+    padding: 20px 0;
     margin-bottom: 20px;
-    padding-top: 20px;
     border-bottom: 1px solid #dedede;
 }
 
@@ -51,6 +50,8 @@ header p {
 
 header img {
     width: 60%;
+    margin-top: 40px;
+    margin-bottom: 24px;
 }
 
 span {
@@ -202,36 +203,41 @@ img {
 /* End overlay */
 
 /* Input field */
+.input-style {
+    padding: 8px;
+    border: 1px solid #ccc;
+    font-size: 24px;
+}
+
 .inputs {
     margin-top: 16px;
     display: flex;
+    margin-bottom: 0;
 }
 
 .inputs input[type=text] {
     display: inline-block;
-    padding: 8px;
-    border: 1px solid #ccc;
     outline: none;
-    font-size: 24px;
     cursor: inherit;
     width: 90%;
     font-weight: 400;
     flex: 1;
 }
 
-.inputs button {
-    padding: 8px;
+.inputs input[type=submit] {
     background-color: #FFF;
-    border: 1px solid #ccc;
     border-left: none;
-    font-size: 24px;
     cursor: pointer;
     background-color: hsla(31,15%,50%,.1);
 }
 
-.inputs button:hover {
+.inputs input[type=submit]:hover {
     background-color: #c0392b;
     color: #FFF;
+}
+
+.inputs select {
+    border-radius: 0;
 }
 /* End Inputs */
 
@@ -265,6 +271,10 @@ img {
     }
     input[type=text] {
         width: 100%;
+    }
+    header img {
+        margin: 8px 0;
+        width: 75%;
     }
     header p {
         font-size: 1em;

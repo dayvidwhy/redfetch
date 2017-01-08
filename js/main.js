@@ -29,19 +29,40 @@ function init() {
 init();
 
 /*
+* Returns the search URL depending on it we want a user or subreddit.
+*/
+function createSearchURL(searchArea, sub) {
+    var url = 'https://www.reddit.com/' + searchArea + '/' + sub;
+    if (searchArea === 'user') url += '/submitted';
+    return url + '.json';
+}
+
+/*
 * Check the input field after enter is hit or search button clicked.
 */
 function checkInputs(ele) {
-    var sub = ele.value.trim().replace(/\s\s+/g, ' ').split(' ').join('+');
-    console.log(sub);
+    var searchAreas = ['r', 'user'];
+
+    // set the current search area
+    searchArea = searchAreas[document.querySelectorAll('select')[0].selectedIndex];
+
+    // work out the input value
+    var sub = ele.value;
+    if (searchArea === 'user' && sub.indexOf(' ') > 0) {
+        ele.placeholder = 'Users can\'t have spaces';
+        ele.value = '';
+        return;
+    }
     if (sub.length === 0) {
         ele.placeholder = 'Please search for something.';
         return;
     }
-    search = sub;
-    searchArea = 'r';
-    baseURL = 'https://www.reddit.com/r/' + sub + '.json';
-    currentURL = baseURL;
+
+    // assign globals
+    search = sub = sub.trim().replace(/\s\s+/g, ' ').split(' ').join('+');
+    baseURL = currentURL = createSearchURL(searchArea, sub);
+
+    // start search after checks done    
     beginSearch();
 }
 
@@ -57,14 +78,17 @@ function bindListeners() {
         }
     });
 
-    document.getElementById('input-search').addEventListener('click', function (e) {
+    document.getElementById('input-search').addEventListener('submit', function (e) {
+        e.preventDefault();
         checkInputs(document.getElementById('input'));
     });
 
     // out overlays image click
     document.getElementById('overlay-user').addEventListener('click', function(e) {
+        document.querySelectorAll('select option')[1].selected = true;
         searchArea = 'user';
         search = this.getAttribute('author');
+        document.querySelectorAll('input')[0].value = search;
         baseURL = 'https://www.reddit.com/' + searchArea + '/' + search + '/submitted.json';
         currentURL = baseURL;
         beginSearch();
@@ -80,7 +104,9 @@ function beginSearch() {
     // setup overlay dismiss
     try {
         document.getElementById('output').innerHTML = '';
-        document.getElementById('img-loading-message').style.display = 'block';
+        var loading = document.getElementById('img-loading-message');
+        loading.style.display = 'block';
+        loading.innerHTML = 'Loading...';
         document.getElementById('overlay').onclick = function() {
             this.style.display = 'none';
             document.body.style.overflow = ''; // let body scroll again
@@ -97,7 +123,13 @@ function beginSearch() {
 * Initiate our Reddit request
 */
 function fetchReddit(currentURL) {
+    console.log(currentURL);
     fetch(currentURL).then(function(response) {
+        console.log(response);
+        if (response.status === 302 || response.status === 404) {
+            document.getElementById('img-loading-message').innerHTML = 'No Results';
+            return;
+        }
         var contentType = response.headers.get("content-type");
         if(contentType && contentType.indexOf("application/json") !== -1) {
             return response.json().then(redditLoaded);
@@ -114,6 +146,10 @@ function redditLoaded(json) {
     currentURL = baseURL + '?after=' + json.data.after;
     var output = document.getElementById("output");
     var len = json.data.children.length;
+    if (len === 0) {
+        document.getElementById('img-loading-message').innerHTML = 'No Results';
+        return;
+    }
     var row, container, image, element, sourceImage;
     for (var i = 1; i < len; i++) {
         if ((i - 1) % 4 === 0) {
