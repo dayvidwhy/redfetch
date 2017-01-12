@@ -18,9 +18,7 @@ function init() {
     } else {
         var fetchPoly = document.createElement('script');
         fetchPoly.src = 'https://cdnjs.cloudflare.com/ajax/libs/fetch/2.0.1/fetch.min.js';
-        fetchPoly.onload = function() {
-            bindListeners();
-        }
+        fetchPoly.onload = bindListeners;
         document.head.appendChild(fetchPoly);
     }
 }
