@@ -1,3 +1,5 @@
+'use strict';
+
 /*
 * Global variables. Will make this more object based soon.
 */
@@ -7,6 +9,7 @@ var baseURL = 'https://www.reddit.com/' + searchArea + '/' + search + '.json'; /
 var currentURL = baseURL; // The current url starts off as the base URL, then changes
 var debounceTimer = null; // Debounce the scroll function
 var debounceDelay = 100;
+var currentContainer;
 
 /* 
 * Check to see if browser supports fetch.
@@ -108,6 +111,7 @@ function beginSearch() {
         document.getElementById('overlay').onclick = function() {
             this.style.display = 'none';
             document.body.style.overflow = ''; // let body scroll again
+            unbindArrowKeys();
         };
         fetchReddit(currentURL);
     } catch(_) { // gotta catch em all. #pokemon-antipattern
@@ -252,7 +256,7 @@ function testScrollHeight() {
 /*
 * When the image fails to load just delete it from the page.
 */
-function imageFail() {
+function imageFail(event) {
     this.outerHTML = '';
 }
 
@@ -283,15 +287,71 @@ function imageLoad(img, large) {
 /*
 * When a user clicks on one of the images.
 */
-function containerClick() {
+function containerClick(event) {    
+    bindArrowKeys();
     // display the overlay with options
     document.getElementById('overlay').style.display = 'block';
-    document.getElementById('overlay-title').innerHTML = this.getAttribute('title-text');
-    document.getElementById('overlay-img').alt = this.getAttribute('title-text');
-    document.getElementById('overlay-img').src = this.getAttribute('large-image');
+    currentContainer = this;
+    setOverlayContents(this);
     var author = this.getAttribute('author');
     var userButton = document.getElementById('overlay-user');
     userButton.setAttribute('author', author);
     userButton.innerHTML = 'By /user/' + author;
     document.body.style.overflow = 'hidden'; // don't let body scroll
+}
+
+// bind a thing
+function bindArrowKeys() {
+    document.addEventListener('keydown', directionPress);
+}
+
+// unbind a thing
+function unbindArrowKeys() {
+    document.removeEventListener('keydown', directionPress);
+}
+
+// they pressed an arrow key maybe
+function directionPress(e) {
+    var newElement, newRow, sibling, child;
+    var key = e.which || e.keyCode;
+
+    // which key?
+    if (key === 37) {
+        // hit left
+        sibling = 'previousSibling';
+        child = 'lastChild';
+    } else if (key === 39) {
+        // pressed right
+        sibling = 'nextSibling';
+        child = 'firstChild';
+    } else {
+        // exit early if not one of those
+        return;
+    }
+
+    newElement = currentContainer[sibling];
+    if (newElement) {
+        // found next element right away
+        currentContainer = newElement;
+        setOverlayContents(currentContainer);
+    } else {
+        // we need to go up and into the previous row
+        newRow = currentContainer.parentElement[sibling];
+        if (newRow) {
+            currentContainer = newRow[child];
+            setOverlayContents(currentContainer);
+        } else {
+            // this was the first row and they went back - end forwards
+            return;
+        }
+    }
+}
+
+/*
+* For the overlay element, extract it's data attributes.
+*/
+function setOverlayContents(element) {
+    document.getElementById('overlay-title').innerHTML = element.getAttribute('title-text');
+    document.getElementById('overlay-img').alt = element.getAttribute('title-text');
+    document.getElementById('overlay-img').src = element.getAttribute('large-image');
 }
