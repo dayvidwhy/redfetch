@@ -10,23 +10,25 @@
     <link rel="shortcut icon" href="favicon.ico?" type="image/x-icon">
     <link rel="icon" href="favicon.ico?" type="image/x-icon">
     <link rel="stylesheet" type="text/css" href="css/style.css">
-    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
     <link rel="canonical" href="https://dayvidwhy.github.io/redfetch/">
 </head>
 <body>
     <main role="main">
-        <div class="banner">
+        <div class="banner box-shad">
             Made by <a href="http://davidyoung.tech">davidyoung.tech</a> | Source on <a href="https://github.com/dayvidwhy/redfetch">Github</a>
         </div>
         <header role="banner">
             <img src="images/redfetch.png">
-            <p>
-                An example of lazily loading images using fetch and the onload event attached to images. We gather images from <span>red</span>dit's API and display them using flexbox. Thumbnails are loaded first and then the full image.
-            </p>
-            <p>
-                Enter a sub<span>red</span>dit or series of sub<span>red</span>dits separated by spaces below. Arrow keys can be used after clicking an image.
-            </p>
-            <form class="inputs" id="input-search">
+            <div class="header-text box-shad">
+                <h1>Get Started</h1>
+                <p>
+                    An example of lazily loading images using fetch and the onload event attached to images. We gather images from <span>red</span>dit's API and display them using flexbox. Thumbnails are loaded first and then the full image.
+                </p>
+                <p>
+                    Enter a sub<span>red</span>dit or series of sub<span>red</span>dits separated by spaces below. Arrow keys can be used after clicking an image.
+                </p>
+            </div>
+            <form class="box-shad" id="input-search">
                 <select class="input-style">
                     <option value="r">/r/</option>
                     <option value="user">/user/</option>
@@ -50,6 +52,13 @@
     </main>
     <script src="js/main.js" type="text/javascript"></script>
     <script>
+    var fontLoad = (function(font) {
+      var link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = 'https://fonts.googleapis.com/css?family=' + font;
+      var anchor = document.head || document.getElementsByTagName('head')[0];
+      anchor.appendChild(link);
+    })('Roboto');
     (function(d,a,y,o,u,n,g){d['GoogleAnalyticsObject']=u;d[u]=d[u]||function(){
       (d[u].q=d[u].q||[]).push(arguments)},d[u].l=1*new Date();n=a.createElement(y),
       g=a.getElementsByTagName(y)[0];n.async=1;n.src=o;g.parentNode.insertBefore(n,g)

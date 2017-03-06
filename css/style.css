@@ -20,7 +20,7 @@ body, p {
 
 /* Header for our bit of text */
 header {
-    width: 768px;
+    width: 960px;
     margin: auto;
     text-align: center;
     padding: 20px 0;
@@ -28,20 +28,23 @@ header {
     border-bottom: 1px solid #dedede;
 }
 
-header h1 {
-    font-size: 56px;
-    margin: 16px 0 0 0;
-    font-weight: 400;
+.header-text {
+    margin-bottom: 24px;
 }
 
-header h2 {
-    margin: 0 0 16px 0;
+header h1 {
+    font-size: 2.2em;
+    margin: 0;
     font-weight: 400;
+    text-align: left;
+    padding: 6px 8px;
+    background-color: #ecf0f1;
+    color: #7f8c8d;
 }
 
 header p {
     font-size: 18px;
-    margin: 8px 0;
+    padding: 8px 8px;
     text-align: left;
     color: #7f8c8d;
     line-height: 1.5;
@@ -125,6 +128,10 @@ img {
     filter: blur(3px);
 }
 
+.box-shad {
+    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+}
+
 .img-zoom {
     box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
     transition: all 0.1s ease-in-out;
@@ -145,7 +152,7 @@ img {
 /* overlay */
 #overlay {
     display: none;
-    background-color: rgba(0, 0, 0, 0.85);
+    background-color: rgba(0, 0, 0, 0.75);
     position: fixed;
     height: 100%;
     width: 100%;
@@ -209,13 +216,12 @@ img {
     font-size: 1.5em;
 }
 
-.inputs {
-    margin-top: 16px;
+form {
     display: flex;
     margin-bottom: 0;
 }
 
-.inputs input[type=text] {
+form input[type='text'] {
     display: inline-block;
     outline: none;
     cursor: inherit;
@@ -224,20 +230,30 @@ img {
     flex: 1;
 }
 
-.inputs input[type=submit] {
+form input[type='submit'] {
     background-color: #FFF;
     border-left: none;
     cursor: pointer;
     background-color: hsla(31,15%,50%,.1);
+    transition: all 0.1s ease-in-out;
 }
 
-.inputs input[type=submit]:hover {
+form input[type='submit']:hover {
     background-color: #c0392b;
     color: #FFF;
 }
 
-.inputs select {
+form select {
     border-radius: 0;
+    -webkit-appearance: none;
+    -webkit-border-radius: 0px;
+    cursor: pointer;
+    transition: all 0.1s ease-in-out;
+}
+
+form select:hover {
+    background-color: #c0392b;
+    color: #FFF;
 }
 /* End Inputs */
 
@@ -247,8 +263,7 @@ img {
         width: 95%;
         margin: auto;
     }
-}
-@media screen and (max-width: 768px) {
+
     header {
         width: 95%;
         margin: auto;
@@ -258,10 +273,10 @@ img {
         width: 100%;
     }
 }
+
 @media screen and (max-width: 500px) {
     header {
-        width: 95%;
-        margin: auto;
+        width: 100%;
     }
     #overlay-inner {
         width: 100%;
