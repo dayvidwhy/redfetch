@@ -14,21 +14,30 @@
 </head>
 <body>
     <main role="main">
-        <div class="banner box-shad">
-            Made by <a href="http://davidyoung.tech">davidyoung.tech</a> | Source on <a href="https://github.com/dayvidwhy/redfetch">Github</a>
-        </div>
+        <nav class="box-shadow">
+            <div class="nav-inner">
+                <ul>
+                    <li>
+                        <a href="http://davidyoung.tech">davidyoung.tech</a>
+                    </li>
+                    <li>
+                        <a href="https://github.com/dayvidwhy/redfetch">github</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
         <header role="banner">
-            <img src="images/redfetch.png">
-            <div class="header-text box-shad">
-                <h1>Get Started</h1>
-                <p>
+            <img class="splash-image" src="images/redfetch.png">
+            <div class="splash-text">
+                <h1>What's this?</h1>
+                <p class>
                     An example of lazily loading images using fetch and the onload event attached to images. We gather images from <span>red</span>dit's API and display them using flexbox. Thumbnails are loaded first and then the full image.
                 </p>
                 <p>
                     Enter a sub<span>red</span>dit or series of sub<span>red</span>dits separated by spaces below. Arrow keys can be used after clicking an image.
                 </p>
             </div>
-            <form class="box-shad" id="input-search">
+            <form id="input-search">
                 <select class="input-style">
                     <option value="r">/r/</option>
                     <option value="user">/user/</option>
@@ -39,11 +48,11 @@
         </header>
         <div id="output">
         </div>
-        <div id="img-loading-message">Loading...</div>
+        <div id="image-loading-message">Loading...</div>
         <div id="overlay">
             <div id="overlay-inner">
                 <div id="overlay-title"></div>
-                <img id="overlay-img" src="" alt="">
+                <img id="overlay-image" src="" alt="">
                 <div class="overlay-user-outer">
                     <button id="overlay-user"></button>
                 </div>
@@ -58,7 +67,7 @@
       link.href = 'https://fonts.googleapis.com/css?family=' + font;
       var anchor = document.head || document.getElementsByTagName('head')[0];
       anchor.appendChild(link);
-    })('Roboto');
+    })('Roboto:300,400');
     (function(d,a,y,o,u,n,g){d['GoogleAnalyticsObject']=u;d[u]=d[u]||function(){
       (d[u].q=d[u].q||[]).push(arguments)},d[u].l=1*new Date();n=a.createElement(y),
       g=a.getElementsByTagName(y)[0];n.async=1;n.src=o;g.parentNode.insertBefore(n,g)

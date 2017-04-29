@@ -105,7 +105,7 @@ function beginSearch() {
     // setup overlay dismiss
     try {
         document.getElementById('output').innerHTML = '';
-        var loading = document.getElementById('img-loading-message');
+        var loading = document.getElementById('image-loading-message');
         loading.style.display = 'block';
         loading.innerHTML = 'Loading...';
         document.getElementById('overlay').onclick = function() {
@@ -127,7 +127,7 @@ function beginSearch() {
 function fetchReddit(currentURL) {
     fetch(currentURL).then(function(response) {
         if (response.status === 302 || response.status === 404) {
-            document.getElementById('img-loading-message').innerHTML = 'No Results';
+            document.getElementById('image-loading-message').innerHTML = 'No Results';
             return;
         }
         var contentType = response.headers.get("content-type");
@@ -147,9 +147,10 @@ function redditLoaded(json) {
     var output = document.getElementById("output");
     var len = json.data.children.length;
     if (len === 0) {
-        document.getElementById('img-loading-message').innerHTML = 'No Results';
+        document.getElementById('image-loading-message').innerHTML = 'No Results';
         return;
     }
+    console.log(json);
     var row, container, image, element, sourceImage;
     for (var i = 1; i < len; i++) {
         if ((i - 1) % 4 === 0) {
@@ -177,7 +178,7 @@ function redditLoaded(json) {
         image = new Image();
         var thumbnail = replaceHTMLEscape(currentImages.resolutions[0].url);
         image.src = thumbnail;
-        image.className = 'img-loading';
+        image.className = 'image-loading';
 
         // Set the large image for our overlay
         if (element.data.url.indexOf('.gifv') > 0) {
@@ -215,20 +216,20 @@ function redditLoaded(json) {
             titleText = titleText.substring(0, 24) + '...';
         }
         title.innerHTML = titleText;
-        title.className = 'img-title';
+        title.className = 'image-title';
 
         // add to dom
         container.appendChild(title);
         row.appendChild(container);
     }
     output.appendChild(row); // append last row
-    document.getElementById('img-loading-message').style.display = 'none';
+    document.getElementById('image-loading-message').style.display = 'none';
     document.addEventListener('scroll', scrollLoad);
 
     // is this enough to fill the page? Some sneaky recursion to fill it out. NB: fires too soon
     var headerHeight = document.getElementsByTagName('header')[0].clientHeight;
     var outputHeight = output.clientHeight;
-    var bannerHeight = document.querySelector('.banner').clientHeight;
+    var bannerHeight = document.querySelector('nav').clientHeight;
     if ((headerHeight + outputHeight + bannerHeight) < window.innerHeight) {
         fetchReddit(currentURL);
     }
@@ -249,7 +250,7 @@ function testScrollHeight() {
     if (document.body.scrollHeight == document.body.scrollTop + window.innerHeight) {
         document.removeEventListener('scroll', scrollLoad);
         fetchReddit(currentURL);
-        document.getElementById('img-loading-message').style.display = 'block';
+        document.getElementById('image-loading-message').style.display = 'block';
     }
 }
 
@@ -279,7 +280,7 @@ function imageLoad(img, large) {
         // when the larger version loads, apply the zoom effect
         this.className = '';
         // and enable the overlay click function to container
-        this.parentElement.className += ' pointer img-zoom';
+        this.parentElement.className += ' image-zoom';
         this.parentElement.onclick = containerClick;
     };
 }
@@ -352,6 +353,6 @@ function directionPress(e) {
 */
 function setOverlayContents(element) {
     document.getElementById('overlay-title').innerHTML = element.getAttribute('title-text');
-    document.getElementById('overlay-img').alt = element.getAttribute('title-text');
-    document.getElementById('overlay-img').src = element.getAttribute('large-image');
+    document.getElementById('overlay-image').alt = element.getAttribute('title-text');
+    document.getElementById('overlay-image').src = element.getAttribute('large-image');
 }

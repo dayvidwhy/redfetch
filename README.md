@@ -18,7 +18,7 @@ Just some holiday hacking.
 * [Fetch API](https://developer.mozilla.org/en/docs/Web/API/Fetch_API)
 
 ## Issues
-* Does not support gyfcat
+* Does not support gyfcat images pulled from reddit.
 
 ## Contributing
 I do not accept contributions to this project, it is a personal project that I intend to update myself in the future, however please feel free to make an issue with a suggested feature you might like.
