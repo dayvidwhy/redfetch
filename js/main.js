@@ -3,13 +3,16 @@
 /*
 * Global variables. Will make this more object based soon.
 */
-var search = 'aww+puppies'; // Keep track of the subreddit we want to scrape for images
-var searchArea = 'r'; // Display subreddits first
-var baseURL = 'https://www.reddit.com/' + searchArea + '/' + search + '.json'; // Main URL for image feed
-var currentURL = baseURL; // The current url starts off as the base URL, then changes
-var debounceTimer = null; // Debounce the scroll function
-var debounceDelay = 100;
-var currentContainer;
+var search = 'aww+puppies', // Keep track of the subreddit we want to scrape for images
+    searchArea = 'r', // Display subreddits first
+    baseURL = 'https://www.reddit.com/' + searchArea + '/' + search + '.json', // Main URL for image feed
+    currentURL = baseURL, // The current url starts off as the base URL, then changes
+    debounceTimer = null, // Debounce the scroll function
+    debounceDelay = 100,
+    currentContainer,
+    output = document.getElementById("output"),
+    loadingMessage = document.getElementById('image-loading-message'),
+    inputField = document.getElementById('input');
 
 /* 
 * Check to see if browser supports fetch.
@@ -71,7 +74,7 @@ function checkInputs(ele) {
 * Apply event listeners.
 */
 function bindListeners() {
-    document.getElementById('input').addEventListener('keypress', function (e) {
+    inputField.addEventListener('keypress', function (e) {
         this.placeholder = '';
         var key = e.which || e.keyCode;
         if (key === 13) { // listen for enter key
@@ -81,7 +84,7 @@ function bindListeners() {
 
     document.getElementById('input-search').addEventListener('submit', function (e) {
         e.preventDefault();
-        checkInputs(document.getElementById('input'));
+        checkInputs(inputField);
     });
 
     // out overlays image click
@@ -104,10 +107,9 @@ function bindListeners() {
 function beginSearch() {
     // setup overlay dismiss
     try {
-        document.getElementById('output').innerHTML = '';
-        var loading = document.getElementById('image-loading-message');
-        loading.style.display = 'block';
-        loading.innerHTML = 'Loading...';
+        output.innerHTML = '';
+        loadingMessage.style.display = 'block';
+        loadingMessage.innerHTML = 'Loading...';
         document.getElementById('overlay').onclick = function() {
             this.style.display = 'none';
             document.body.style.overflow = ''; // let body scroll again
@@ -117,7 +119,7 @@ function beginSearch() {
     } catch(_) { // gotta catch em all. #pokemon-antipattern
         var error = document.createElement('h2');
         error.innerHTML = 'Something went super wrong, try refreshing.';
-        document.getElementById("output").appendChild(error);
+        output.appendChild(error);
     }
 }
 
@@ -127,15 +129,17 @@ function beginSearch() {
 function fetchReddit(currentURL) {
     fetch(currentURL).then(function(response) {
         if (response.status === 302 || response.status === 404) {
-            document.getElementById('image-loading-message').innerHTML = 'No Results';
+            loadingMessage.innerHTML = 'No Results';
             return;
         }
         var contentType = response.headers.get("content-type");
-        if(contentType && contentType.indexOf("application/json") !== -1) {
+        if (contentType && contentType.indexOf("application/json") !== -1) {
             return response.json().then(redditLoaded);
-        } else {
-            // probably a bad subreddit
         }
+    }).catch(function(err) {
+        // fetch throws an error if reddit redirects us, subreddit doesn't exist.
+        inputField.value = '';
+        loadingMessage.innerHTML = 'That subreddit doesn\'t exist sorry.';
     });
 }
 
@@ -144,10 +148,9 @@ function fetchReddit(currentURL) {
 */
 function redditLoaded(json) {
     currentURL = baseURL + '?after=' + json.data.after;
-    var output = document.getElementById("output");
     var len = json.data.children.length;
     if (len === 0) {
-        document.getElementById('image-loading-message').innerHTML = 'No Results';
+        loadingMessage.innerHTML = 'No Results';
         return;
     }
     console.log(json);
@@ -223,7 +226,7 @@ function redditLoaded(json) {
         row.appendChild(container);
     }
     output.appendChild(row); // append last row
-    document.getElementById('image-loading-message').style.display = 'none';
+    loadingMessage.style.display = 'none';
     document.addEventListener('scroll', scrollLoad);
 
     // is this enough to fill the page? Some sneaky recursion to fill it out. NB: fires too soon
@@ -250,7 +253,7 @@ function testScrollHeight() {
     if (document.body.scrollHeight == document.body.scrollTop + window.innerHeight) {
         document.removeEventListener('scroll', scrollLoad);
         fetchReddit(currentURL);
-        document.getElementById('image-loading-message').style.display = 'block';
+        loadingMessage.style.display = 'block';
     }
 }
 
