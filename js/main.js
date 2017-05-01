@@ -62,12 +62,26 @@ function checkInputs(ele) {
         return;
     }
 
+    // break up the search into an array of subreddits
+    var subReddits = sub.trim().replace(/\s\s+/g, ' ').split(' ');
+
+    analytics(subReddits);
+
     // assign globals
-    search = sub = sub.trim().replace(/\s\s+/g, ' ').split(' ').join('+');
+    search = sub = subReddits.join('+');
     baseURL = currentURL = createSearchURL(searchArea, sub);
 
     // start search after checks done    
     beginSearch();
+}
+
+/*
+* Fire off searched requests.
+*/
+function analytics(subReddits) {
+    for (var i = 0; i < subReddits.length; i++) {
+        ga('send', 'event', 'Subreddits', 'searched', subReddits[i]);
+    }
 }
 
 /*
@@ -98,7 +112,7 @@ function bindListeners() {
         beginSearch();
     });
 
-    beginSearch(); // auto search on load
+    // beginSearch(); // auto search on load
 }
 
 /*
@@ -153,7 +167,7 @@ function redditLoaded(json) {
         loadingMessage.innerHTML = 'No Results';
         return;
     }
-    console.log(json);
+
     var row, container, image, element, sourceImage;
     for (var i = 1; i < len; i++) {
         if ((i - 1) % 4 === 0) {
