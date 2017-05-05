@@ -12,7 +12,8 @@ var search = 'aww+puppies', // Keep track of the subreddit we want to scrape for
     currentContainer,
     output = document.getElementById("output"),
     loadingMessage = document.getElementById('image-loading-message'),
-    inputField = document.getElementById('input');
+    inputField = document.getElementById('input'),
+    inputSearch = document.getElementById('input-search');
 
 /* 
 * Check to see if browser supports fetch.
@@ -88,18 +89,7 @@ function analytics(subReddits) {
 * Apply event listeners.
 */
 function bindListeners() {
-    inputField.addEventListener('keypress', function (e) {
-        this.placeholder = '';
-        var key = e.which || e.keyCode;
-        if (key === 13) { // listen for enter key
-          checkInputs(this);
-        }
-    });
-
-    document.getElementById('input-search').addEventListener('submit', function (e) {
-        e.preventDefault();
-        checkInputs(inputField);
-    });
+    bindSearchListeners();
 
     // out overlays image click
     document.getElementById('overlay-user').addEventListener('click', function(e) {
@@ -111,8 +101,24 @@ function bindListeners() {
         currentURL = baseURL;
         beginSearch();
     });
+}
 
-    // beginSearch(); // auto search on load
+/*
+* Separate handling for the search to prevent multiple api requests at once.
+*/
+function bindSearchListeners() {
+    inputField.addEventListener('keypress', function (e) {
+        this.placeholder = '';
+        var key = e.which || e.keyCode;
+        if (key === 13) { // listen for enter key
+          checkInputs(this);
+        }
+    });
+
+    inputSearch.addEventListener('submit', function (e) {
+        e.preventDefault();
+        checkInputs(inputField);
+    });
 }
 
 /*
