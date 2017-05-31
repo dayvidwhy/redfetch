@@ -13,7 +13,8 @@ var search = 'aww+puppies', // Keep track of the subreddit we want to scrape for
     output = document.getElementById("output"),
     loadingMessage = document.getElementById('image-loading-message'),
     inputField = document.getElementById('input'),
-    inputSearch = document.getElementById('input-search');
+    inputSearch = document.getElementById('input-search'),
+    currentSelector = document.querySelectorAll('select')[0];
 
 /* 
 * Check to see if browser supports fetch.
@@ -49,7 +50,7 @@ function checkInputs(ele) {
     var searchAreas = ['r', 'user'];
 
     // set the current search area
-    searchArea = searchAreas[document.querySelectorAll('select')[0].selectedIndex];
+    searchArea = searchAreas[currentSelector.selectedIndex];
 
     // work out the input value
     var sub = ele.value;
