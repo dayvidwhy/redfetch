@@ -86,10 +86,20 @@ function imageLoad (img, large) {
 function insertImages (data) {
     var container, image, element, sourceImage;
     var len = data.children.length;
+
+    // deal with first case of no row existing
+    if (!currentRow) {
+        currentRow = document.createElement("div");
+        currentRow.className = "row";
+        output.appendChild(currentRow);
+    }
+
+    // for each image
     for (var i = 0; i < len; i++) {
-        if (imageCounter % 4 === 0) {
+        if (imageCounter === 4) {
             // starting a row
-            if (currentRow) output.appendChild(currentRow);
+            imageCounter = 0;
+            output.appendChild(currentRow);
             currentRow = document.createElement("div");
             currentRow.className = "row";
             output.appendChild(currentRow);
