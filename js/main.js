@@ -10,6 +10,8 @@ var search = "aww+puppies", // Keep track of the subreddit we want to scrape for
     debounceTimer = null, // Debounce the scroll function
     debounceDelay = 100,
     currentContainer,
+    currentRow,
+    imageCounter = 0,
     output = document.getElementById("output"),
     loadingMessage = document.getElementById("image-loading-message"),
     inputField = document.getElementById("input"),
@@ -82,14 +84,15 @@ function imageLoad (img, large) {
 * When our JSON successfully loads parse it and render images on the page.
 */
 function insertImages (data) {
-    var row, container, image, element, sourceImage;
+    var container, image, element, sourceImage;
     var len = data.children.length;
     for (var i = 0; i < len; i++) {
-        if (i % 4 === 0) {
+        if (imageCounter % 4 === 0) {
             // starting a row
-            if (row) output.appendChild(row);
-            row = document.createElement("div");
-            row.className = "row";
+            if (currentRow) output.appendChild(currentRow);
+            currentRow = document.createElement("div");
+            currentRow.className = "row";
+            output.appendChild(currentRow);
         }
 
         element = data.children[i];
@@ -156,11 +159,13 @@ function insertImages (data) {
 
         // add to dom
         container.appendChild(title);
-        row.appendChild(container);
+        currentRow.appendChild(container);
+
+        // increment our image counter
+        imageCounter++;
     }
 
-    // append last row
-    output.appendChild(row);
+    // done loading for now
     loadingMessage.style.display = "none";
 
     // is this enough to fill the page? Some sneaky recursion to fill it out. NB: fires too soon
@@ -218,6 +223,8 @@ function beginSearch () {
     // setup overlay dismiss
     try {
         output.innerHTML = "";
+        currentRow = undefined;
+        imageCounter = 0;
         loadingMessage.style.display = "block";
         loadingMessage.innerHTML = "Loading...";
         document.getElementById("overlay").onclick = function() {
