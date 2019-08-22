@@ -27,28 +27,28 @@ function scrollLoad (event) {
 /*
 * Initiate our Reddit request
 */
-function fetchReddit (currentURL) {
-    fetch(currentURL).then(function(response) {
+function fetchRedditImages () {
+    fetch(currentURL).then(function (response) {
         if (response.status === 302 || response.status === 404) {
             loadingMessage.innerHTML = "No Results";
             return;
         }
         var contentType = response.headers.get("content-type");
         if (contentType && contentType.indexOf("application/json") !== -1) {
-            return response.json().then(redditLoaded);
+            response.json().then(function (json) {
+                if (json.data.children.length === 0) {
+                    loadingMessage.innerHTML = "No Results";
+                    return;
+                }
+                currentURL = baseURL + "?after=" + json.data.after;
+                insertImages(json.data);
+            });
         }
-    }).catch(function (err) {
+    }).catch(function () {
         // fetch throws an error if reddit redirects us, subreddit doesn"t exist.
         inputField.value = "";
-        loadingMessage.innerHTML = "That subreddit doesn\"t exist sorry.";
+        loadingMessage.innerHTML = "That subreddit doesn't exist sorry.";
     });
-}
-
-/*
-* When the image fails to load just delete it from the page.
-*/
-function imageFail (event) {
-    this.outerHTML = "";
 }
 
 /*
@@ -78,15 +78,9 @@ function imageLoad (img, large) {
 /*
 * When our JSON successfully loads parse it and render images on the page.
 */
-function redditLoaded (json) {
-    currentURL = baseURL + "?after=" + json.data.after;
-    var len = json.data.children.length;
-    if (len === 0) {
-        loadingMessage.innerHTML = "No Results";
-        return;
-    }
-
+function insertImages (data) {
     var row, container, image, element, sourceImage;
+    var len = data.children.length;
     for (var i = 1; i < len; i++) {
         if ((i - 1) % 4 === 0) {
             // starting a row
@@ -95,7 +89,7 @@ function redditLoaded (json) {
             row.className = "row";
         }
 
-        element = json.data.children[i];
+        element = data.children[i];
 
         // Does this element have preview images?
         if (!element.data.preview) continue;
@@ -126,12 +120,15 @@ function redditLoaded (json) {
 
         // when it loads change the src to the bigger one
         image.onload = (function (image, largeResolution) {
-            return function() {
+            return function () {
                 imageLoad(image, largeResolution);
             };
         })(image, largeResolution.url);
+
         // if it fails to load delete the element
-        image.onerror = imageFail;
+        image.onerror = function () {
+            this.outerHTML = "";
+        }
 
         // Build the container
         container = document.createElement("div");
@@ -166,7 +163,7 @@ function redditLoaded (json) {
     var outputHeight = output.clientHeight;
     var bannerHeight = document.querySelector("nav").clientHeight;
     if ((headerHeight + outputHeight + bannerHeight) < window.innerHeight) {
-        fetchReddit(currentURL);
+        fetchRedditImages();
     }
 }
 
@@ -222,7 +219,7 @@ function beginSearch () {
             document.body.style.overflow = "";
             unbindArrowKeys();
         };
-        fetchReddit(currentURL);
+        fetchRedditImages();
     } catch (_) {
         var error = document.createElement("h2");
         error.innerHTML = "Something went super wrong, try refreshing.";
@@ -297,8 +294,8 @@ function checkInputs (ele) {
 
     // work out the input value
     var sub = ele.value;
-    if (searchArea === "user" && sub.indexOf(" ") > 0) {
-        ele.placeholder = "Users can\"t have spaces";
+    if (searchArea === "user" && sub.indexOf(" ") >= 0) {
+        ele.placeholder = "Users can't have spaces.";
         ele.value = "";
         return;
     }
@@ -319,9 +316,9 @@ function checkInputs (ele) {
 }
 
 /*
-* Separate handling for the search to prevent multiple api requests at once.
+* Apply event listeners.
 */
-function bindSearchListeners () {
+function bindListeners () {
     inputField.addEventListener("keypress", function (e) {
         this.placeholder = "";
         var key = e.which || e.keyCode;
@@ -334,16 +331,9 @@ function bindSearchListeners () {
         e.preventDefault();
         checkInputs(inputField);
     });
-}
-
-/*
-* Apply event listeners.
-*/
-function bindListeners () {
-    bindSearchListeners();
 
     // out overlays image click
-    document.getElementById("overlay-user").addEventListener("click", function(e) {
+    document.getElementById("overlay-user").addEventListener("click", function (e) {
         document.querySelectorAll("select option")[1].selected = true;
         searchArea = "user";
         search = this.getAttribute("author");
