@@ -81,8 +81,8 @@ function imageLoad (img, large) {
 function insertImages (data) {
     var row, container, image, element, sourceImage;
     var len = data.children.length;
-    for (var i = 1; i < len; i++) {
-        if ((i - 1) % 4 === 0) {
+    for (var i = 0; i < len; i++) {
+        if (i % 4 === 0) {
             // starting a row
             if (row) output.appendChild(row);
             row = document.createElement("div");
@@ -133,6 +133,7 @@ function insertImages (data) {
         // Build the container
         container = document.createElement("div");
         container.className = "image-container";
+
         // let's our images be tiled
         container.style.flex = aspect;
         container.setAttribute("large-image", sourceImage);
@@ -154,7 +155,9 @@ function insertImages (data) {
         container.appendChild(title);
         row.appendChild(container);
     }
-    output.appendChild(row); // append last row
+
+    // append last row
+    output.appendChild(row);
     loadingMessage.style.display = "none";
 
     // is this enough to fill the page? Some sneaky recursion to fill it out. NB: fires too soon
