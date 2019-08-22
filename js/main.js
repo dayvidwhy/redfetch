@@ -156,7 +156,6 @@ function insertImages (data) {
     }
     output.appendChild(row); // append last row
     loadingMessage.style.display = "none";
-    document.addEventListener("scroll", scrollLoad);
 
     // is this enough to fill the page? Some sneaky recursion to fill it out. NB: fires too soon
     var headerHeight = document.getElementsByTagName("header")[0].clientHeight;
@@ -164,6 +163,8 @@ function insertImages (data) {
     var bannerHeight = document.querySelector("nav").clientHeight;
     if ((headerHeight + outputHeight + bannerHeight) < window.innerHeight) {
         fetchRedditImages();
+    } else {
+        document.addEventListener("scroll", scrollLoad);
     }
 }
 
@@ -173,7 +174,7 @@ function insertImages (data) {
 function testScrollHeight () {
     if (document.body.scrollHeight == document.body.scrollTop + window.innerHeight) {
         document.removeEventListener("scroll", scrollLoad);
-        fetchReddit(currentURL);
+        fetchRedditImages();
         loadingMessage.style.display = "block";
     }
 }
