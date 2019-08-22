@@ -17,18 +17,9 @@ var search = "aww+puppies", // Keep track of the subreddit we want to scrape for
     currentSelector = document.querySelectorAll("select")[0];
 
 /*
-* Fire off searched requests.
-*/
-function analytics(subReddits) {
-    for (var i = 0; i < subReddits.length; i++) {
-        ga("send", "event", "Subreddits", "searched", subReddits[i]); // eslint-disable-line no-undef
-    }
-}
-
-/*
 * Debounce scroll event.
 */
-function scrollLoad(event) {
+function scrollLoad (event) {
     clearTimeout(debounceTimer);
     debounceTimer = setTimeout(testScrollHeight, debounceDelay);
 }
@@ -36,7 +27,7 @@ function scrollLoad(event) {
 /*
 * Initiate our Reddit request
 */
-function fetchReddit(currentURL) {
+function fetchReddit (currentURL) {
     fetch(currentURL).then(function(response) {
         if (response.status === 302 || response.status === 404) {
             loadingMessage.innerHTML = "No Results";
@@ -46,7 +37,7 @@ function fetchReddit(currentURL) {
         if (contentType && contentType.indexOf("application/json") !== -1) {
             return response.json().then(redditLoaded);
         }
-    }).catch(function(err) {
+    }).catch(function (err) {
         // fetch throws an error if reddit redirects us, subreddit doesn"t exist.
         inputField.value = "";
         loadingMessage.innerHTML = "That subreddit doesn\"t exist sorry.";
@@ -56,14 +47,14 @@ function fetchReddit(currentURL) {
 /*
 * When the image fails to load just delete it from the page.
 */
-function imageFail(event) {
+function imageFail (event) {
     this.outerHTML = "";
 }
 
 /*
 * Takes a string and replaces HTML escaped &
 */
-function replaceHTMLEscape(string) {
+function replaceHTMLEscape (string) {
     return string.split("&amp;").join("&");
 }
 
@@ -72,7 +63,7 @@ function replaceHTMLEscape(string) {
 * This will cause a network request to start and the user can view the
 * blurry thumbnail until it's done.
 */
-function imageLoad(img, large) {
+function imageLoad (img, large) {
     large = replaceHTMLEscape(large);
     img.src = large;
     img.onload = function() {
@@ -87,7 +78,7 @@ function imageLoad(img, large) {
 /*
 * When our JSON successfully loads parse it and render images on the page.
 */
-function redditLoaded(json) {
+function redditLoaded (json) {
     currentURL = baseURL + "?after=" + json.data.after;
     var len = json.data.children.length;
     if (len === 0) {
@@ -134,7 +125,7 @@ function redditLoaded(json) {
         }
 
         // when it loads change the src to the bigger one
-        image.onload = (function(image, largeResolution) {
+        image.onload = (function (image, largeResolution) {
             return function() {
                 imageLoad(image, largeResolution);
             };
@@ -182,7 +173,7 @@ function redditLoaded(json) {
 /*
 * Function to see if we have scrolled far enough down the page.
 */
-function testScrollHeight() {
+function testScrollHeight () {
     if (document.body.scrollHeight == document.body.scrollTop + window.innerHeight) {
         document.removeEventListener("scroll", scrollLoad);
         fetchReddit(currentURL);
@@ -193,7 +184,7 @@ function testScrollHeight() {
 /*
 * When a user clicks on one of the images.
 */
-function containerClick(event) {    
+function containerClick () {    
     bindArrowKeys();
     // display the overlay with options
     document.getElementById("overlay").style.display = "block";
@@ -207,19 +198,19 @@ function containerClick(event) {
 }
 
 // bind a thing
-function bindArrowKeys() {
+function bindArrowKeys () {
     document.addEventListener("keydown", directionPress);
 }
 
 // unbind a thing
-function unbindArrowKeys() {
+function unbindArrowKeys () {
     document.removeEventListener("keydown", directionPress);
 }
 
 /*
 * Setup overlay handler and begin searching.
 */
-function beginSearch() {
+function beginSearch () {
     // setup overlay dismiss
     try {
         output.innerHTML = "";
@@ -227,11 +218,12 @@ function beginSearch() {
         loadingMessage.innerHTML = "Loading...";
         document.getElementById("overlay").onclick = function() {
             this.style.display = "none";
-            document.body.style.overflow = ""; // let body scroll again
+            // let body scroll again
+            document.body.style.overflow = "";
             unbindArrowKeys();
         };
         fetchReddit(currentURL);
-    } catch(_) { // gotta catch em all. #pokemon-antipattern
+    } catch (_) {
         var error = document.createElement("h2");
         error.innerHTML = "Something went super wrong, try refreshing.";
         output.appendChild(error);
@@ -239,7 +231,7 @@ function beginSearch() {
 }
 
 // they pressed an arrow key maybe
-function directionPress(e) {
+function directionPress (e) {
     var newElement, newRow, sibling, child;
     var key = e.which || e.keyCode;
 
@@ -278,7 +270,7 @@ function directionPress(e) {
 /*
 * For the overlay element, extract it's data attributes.
 */
-function setOverlayContents(element) {
+function setOverlayContents (element) {
     document.getElementById("overlay-title").innerHTML = element.getAttribute("title-text");
     document.getElementById("overlay-image").alt = element.getAttribute("title-text");
     document.getElementById("overlay-image").src = element.getAttribute("large-image");
@@ -287,7 +279,7 @@ function setOverlayContents(element) {
 /*
 * Returns the search URL depending on it we want a user or subreddit.
 */
-function createSearchURL(searchArea, sub) {
+function createSearchURL (searchArea, sub) {
     var url = "https://www.reddit.com/" + searchArea + "/" + sub;
     if (searchArea === "user") url += "/submitted";
     return url + ".json";   
@@ -297,7 +289,7 @@ function createSearchURL(searchArea, sub) {
 /*
 * Check the input field after enter is hit or search button clicked.
 */
-function checkInputs(ele) {
+function checkInputs (ele) {
     var searchAreas = ["r", "user"];
 
     // set the current search area
@@ -318,8 +310,6 @@ function checkInputs(ele) {
     // break up the search into an array of subreddits
     var subReddits = sub.trim().replace(/\s\s+/g, " ").split(" ");
 
-    analytics(subReddits);
-
     // assign globals
     search = sub = subReddits.join("+");
     baseURL = currentURL = createSearchURL(searchArea, sub);
@@ -331,7 +321,7 @@ function checkInputs(ele) {
 /*
 * Separate handling for the search to prevent multiple api requests at once.
 */
-function bindSearchListeners() {
+function bindSearchListeners () {
     inputField.addEventListener("keypress", function (e) {
         this.placeholder = "";
         var key = e.which || e.keyCode;
@@ -349,7 +339,7 @@ function bindSearchListeners() {
 /*
 * Apply event listeners.
 */
-function bindListeners() {
+function bindListeners () {
     bindSearchListeners();
 
     // out overlays image click
@@ -368,7 +358,7 @@ function bindListeners() {
 * Check to see if browser supports fetch.
 * If not, polyfill it then start.
 */
-function init() {
+(function init () {
     if (window.fetch) {
         bindListeners();
     } else {
@@ -377,7 +367,4 @@ function init() {
         fetchPoly.onload = bindListeners;
         document.head.appendChild(fetchPoly);
     }
-}
-
-// okgo
-init();
+})();
