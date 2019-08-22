@@ -43,6 +43,9 @@ function fetchRedditImages () {
                 currentURL = baseURL + "?after=" + json.data.after;
                 insertImages(json.data);
             });
+        } else {
+            loadingMessage.innerHTML = "Result looked strange.";
+            return;
         }
     }).catch(function () {
         // fetch throws an error if reddit redirects us, subreddit doesn"t exist.
