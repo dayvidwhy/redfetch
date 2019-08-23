@@ -193,7 +193,7 @@ function insertImages (data) {
 * Function to see if we have scrolled far enough down the page.
 */
 function testScrollHeight () {
-    if (document.body.scrollHeight == document.body.scrollTop + window.innerHeight) {
+    if (document.body.scrollTop + window.innerHeight >= document.body.scrollHeight) {
         document.removeEventListener("scroll", scrollLoad);
         fetchRedditImages();
         loadingMessage.style.display = "block";
