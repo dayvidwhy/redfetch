@@ -267,6 +267,8 @@ form input[type='text'] {
     width: 90%;
     font-weight: 400;
     flex: 1;
+    -webkit-appearance: none;
+    -webkit-border-radius: 0;
 }
 
 form input[type='submit'] {
@@ -275,6 +277,8 @@ form input[type='submit'] {
     cursor: pointer;
     background-color: hsla(31,15%,50%,.1);
     transition: all 0.1s ease-in-out;
+    -webkit-appearance: none;
+    -webkit-border-radius: 0;
 }
 
 form input[type='submit']:hover {
