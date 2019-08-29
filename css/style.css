@@ -253,6 +253,7 @@ img {
     padding: 8px;
     border: 1px solid #ccc;
     font-size: 1.5em;
+    margin: 0;
 }
 
 form {
