@@ -107,8 +107,8 @@ function insertImages (data) {
 
         element = data.children[i];
 
-        // Does this element have preview images?
-        if (!element.data.preview) continue;
+        // Potentially skip the image
+        if (!element.data.preview || element.data.over_18) continue;
         var currentImages = element.data.preview.images[0];
 
         // If the resolutions array is empty just skip the image
