@@ -208,9 +208,14 @@ var imageStore = (function () {
 var scroller = (function () {
     var debounceTimer = null;
 
+    // have we scrolled to the end of the page?
+    function _testHeight () {
+        return window.pageYOffset + window.innerHeight >= document.body.scrollHeight;
+    }
+
     // Have scrolled far enough down the page?
     function testScrollHeight () {
-        if (window.pageYOffset + window.innerHeight >= document.body.scrollHeight) {
+        if (_testHeight()) {
             scroller.disableScroller();
             fetchRedditImages();
         }
@@ -229,7 +234,7 @@ var scroller = (function () {
             document.removeEventListener("scroll", scrollLoad);
         },
         testHeight () {
-            return window.pageYOffset + window.innerHeight >= document.body.scrollHeight;
+            return _testHeight();
         }
     }
 })();
