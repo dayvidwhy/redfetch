@@ -345,15 +345,6 @@ function validateInputs (inputField) {
 function bindListeners () {
     var inputField = document.getElementById("input");
 
-    // pressing enter while on input
-    inputField.addEventListener("keypress", function (e) {
-        inputField.placeholder = "";
-        var key = e.which || e.keyCode;
-        if (key === 13) { // listen for enter key
-            validateInputs(inputField) && imageStore.clearImages() && fetchRedditImages();
-        }
-    });
-
     // clicking the search button
     document.getElementById("input-search").addEventListener("submit", function (e) {
         e.preventDefault();
