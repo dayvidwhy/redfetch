@@ -319,6 +319,7 @@ form select:hover {
 
     .nav-inner {
         margin-left: 8px;
+        width: 95%;
     }
 }
 
