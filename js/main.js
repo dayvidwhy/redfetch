@@ -4,11 +4,11 @@ var loader = (function () {
     var loadingMessage = document.getElementById("image-loading-message");
 
     return {
-        setLoadingMessage (message) {
+        message (message) {
             loadingMessage.style.display = "block";
             loadingMessage.innerHTML = message;
         },
-        hideLoadingMessage () {
+        hide () {
             loadingMessage.style.display = "none";
         }
     }
@@ -30,7 +30,7 @@ function getSearchUrl () {
 
 // Initiate our Reddit request
 function fetchRedditImages () {
-    loader.setLoadingMessage("Loading...");
+    loader.message("Loading...");
     fetch(getSearchUrl())
         .then(function (response) {
             if (response.status === 302 || response.status === 404) {
@@ -44,11 +44,11 @@ function fetchRedditImages () {
         })
         .then(function (images) {
             if (images.data.children.length === 0) {
-                return loader.setLoadingMessage("No Results");
+                return loader.message("No Results");
             }
             imageStore.setNextImages(images.data.after);
             imageStore.insertImages(images.data);
-            loader.hideLoadingMessage()
+            loader.hide()
 
             // cheap way to see if we filled the current view with images
             // ideally track if all pulled images load, then test height
@@ -60,7 +60,7 @@ function fetchRedditImages () {
                 }
             }, 1000);
         }).catch(function () {
-            return loader.setLoadingMessage("Something went wrong, try refreshing.");
+            return loader.message("Something went wrong, try refreshing.");
         });
 }
 
@@ -142,29 +142,25 @@ var imageStore = (function () {
                     sourceImage = replaceHTMLEscape(currentImages.source.url);
                 }
         
-                // when it loads change the src to the bigger one
-                image.onload = (function (image, largeResolution) {
+                /*
+                * When the thumbnail loads change its source to the larger image.
+                * This will cause a network request to start and the user can view the
+                * blurry thumbnail until it's done.
+                */
+                image.onload = (function (img, largeImage) {
                     return function () {
-                        /*
-                        * When the thumbnail loads change its source to the larger image.
-                        * This will cause a network request to start and the user can view the
-                        * blurry thumbnail until it's done.
-                        */
-                        function imageLoad (img, large) {
-                            large = replaceHTMLEscape(large);
-                            img.src = large;
-                            img.onload = function () {
-                                // when the larger version loads, apply the zoom effect
-                                this.className = "";
-                                // and enable the overlay click function to container
-                                this.parentElement.className += " image-zoom";
-                                // When a user clicks on one of the images.
-                                this.parentElement.onclick = function () {
-                                    overlay.displayImage(this);
-                                }
-                            };
-                        }
-                        imageLoad(image, largeResolution);
+                        img.src = replaceHTMLEscape(largeImage);
+                        img.onload = function () {
+                            this.className = "";
+
+                            // when the larger version loads, apply the zoom effect
+                            this.parentElement.className += " image-zoom";
+
+                            // Clicking the image shows the overlay
+                            this.parentElement.onclick = function () {
+                                overlay.displayImage(this);
+                            }
+                        };
                     };
                 })(image, largeResolution.url);
         
