@@ -104,12 +104,12 @@ var imageStore = (function () {
                     currentRow = document.createElement("div");
                     currentRow.className = "row";
                 }
-        
+
                 var element = data.children[i];
-        
+
                 // should we use this image?
                 if (!element.data.preview || element.data.over_18) continue;
-                
+
                 var currentImages = element.data.preview.images[0];
 
                 // If the resolutions array is empty just skip the image
@@ -135,10 +135,10 @@ var imageStore = (function () {
                 * This will cause a network request to start and the user can view the
                 * blurry thumbnail until it's done.
                 */
-                image.onload = (function (img, largeImage) {
+                image.onload = (function (_image, _largeResolution) {
                     return function () {
-                        img.src = replaceHTMLEscape(largeImage);
-                        img.onload = function () {
+                        _image.src = replaceHTMLEscape(_largeResolution);
+                        _image.onload = function () {
                             this.className = "";
 
                             // when the larger version loads, apply the zoom effect
@@ -152,12 +152,11 @@ var imageStore = (function () {
                     };
                 })(image, largeResolution.url);
 
-        
                 // if it fails to load delete the element
                 image.onerror = function () {
                     this.outerHTML = "";
                 }
-        
+
                 // build the container
                 var container = document.createElement("div");
                 container.className = "image-container";
@@ -177,7 +176,7 @@ var imageStore = (function () {
                 container.setAttribute("title-text", titleText);
                 container.setAttribute("author", element.data.author);
                 container.appendChild(image);
-        
+
                 // adds the title to the overlay
                 var title = document.createElement("p");
                 if (titleText.length > 25) {
@@ -185,11 +184,11 @@ var imageStore = (function () {
                 }
                 title.innerHTML = titleText;
                 title.className = "image-title";
-        
+
                 // add to the page
                 container.appendChild(title);
                 currentRow.appendChild(container);
-        
+
                 // increment our image counter
                 imageCounter++;
             }
