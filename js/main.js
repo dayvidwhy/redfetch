@@ -71,7 +71,8 @@ function replaceHTMLEscape (string) {
 
 // When our JSON successfully loads parse it and render images on the page.
 var imageStore = (function () {
-    var currentRow;
+    var currentRow = document.createElement("div");
+    currentRow.className = "row";
     var imageCounter = 0;
     var imagesPerRow = 4;
     var output = document.getElementById("output");
@@ -79,7 +80,8 @@ var imageStore = (function () {
 
     return {
         clearImages () {
-            currentRow = undefined;
+            currentRow = document.createElement("div");
+            currentRow.className = "row";
             imageCounter = 0;
             nextImages = undefined;
             output.innerHTML = "";
@@ -91,57 +93,43 @@ var imageStore = (function () {
         getNextImages () {
             return nextImages ? "?after=" + nextImages : "";
         },
-        insertImages (data) {
-            var container, image, element, sourceImage;
-        
-            // deal with first case of no row existing
-            if (!currentRow) {
-                currentRow = document.createElement("div");
-                currentRow.className = "row";
-                output.appendChild(currentRow);
-            }
-        
-            // for each image
+        insertImages (data) {       
             for (var i = 0; i < data.children.length; i++) {
+                // check for a full row
                 if (imageCounter === imagesPerRow) {
-                    // starting a row
+                    output.appendChild(currentRow);
+
                     imageCounter = 0;
 
-                    // build a new row
                     currentRow = document.createElement("div");
                     currentRow.className = "row";
-                    output.appendChild(currentRow);
                 }
         
-                element = data.children[i];
+                var element = data.children[i];
         
-                // Potentially skip the image
+                // should we use this image?
                 if (!element.data.preview || element.data.over_18) continue;
+                
                 var currentImages = element.data.preview.images[0];
-        
+
                 // If the resolutions array is empty just skip the image
                 if (currentImages.resolutions.length === 0) continue;
-                var currentResolutions = currentImages.resolutions;
-        
+
+                // title of the image
+                var titleText = element.data.title;
+
                 // Work out image aspect, pick something from the middle of the array
+                var currentResolutions = currentImages.resolutions;
                 var largeResolution = currentResolutions[Math.floor(currentResolutions.length - 1 / 2)];
                 var aspect = largeResolution.width / largeResolution.height;
         
-                // Create the image with thumbnail
-                image = new Image();
+                // create the image
+                var image = new Image();
                 var thumbnail = replaceHTMLEscape(currentImages.resolutions[0].url);
                 image.src = thumbnail;
                 image.className = "image-loading";
-        
-                // Set the large image for our overlay
-                if (element.data.url.indexOf(".gifv") > 0) {
-                    // it's an imgur gifv image
-                    sourceImage = element.data.url.substring(0, element.data.url.length - 1);
-                } else {
-                    // it's something plain, or gyfcat
-                    sourceImage = replaceHTMLEscape(currentImages.source.url);
-                }
-        
+                image.alt = titleText;
+
                 /*
                 * When the thumbnail loads change its source to the larger image.
                 * This will cause a network request to start and the user can view the
@@ -169,20 +157,26 @@ var imageStore = (function () {
                     this.outerHTML = "";
                 }
         
-                // Build the container
-                container = document.createElement("div");
+                // build the container
+                var container = document.createElement("div");
                 container.className = "image-container";
-        
                 // let's our images be tiled
                 container.style.flex = aspect;
-                container.setAttribute("large-image", sourceImage);
-                var titleText = element.data.title;
-                image.alt = titleText;
+                // set the large image for our overlay
+                container.setAttribute("large-image", (function () {
+                    if (element.data.url.indexOf(".gifv") > 0) {
+                        // it's an imgur gifv image
+                        return element.data.url.substring(0, element.data.url.length - 1);
+                    } else {
+                        // it's something plain, or gyfcat
+                        return replaceHTMLEscape(currentImages.source.url);
+                    }
+                })());
                 container.setAttribute("title-text", titleText);
                 container.setAttribute("author", element.data.author);
                 container.appendChild(image);
         
-                // Add title overlay to image
+                // adds the title to the overlay
                 var title = document.createElement("p");
                 if (titleText.length > 25) {
                     titleText = titleText.substring(0, 24) + "...";
@@ -190,7 +184,7 @@ var imageStore = (function () {
                 title.innerHTML = titleText;
                 title.className = "image-title";
         
-                // add to dom
+                // add to the page
                 container.appendChild(title);
                 currentRow.appendChild(container);
         
