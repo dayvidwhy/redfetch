@@ -346,6 +346,9 @@ function validateInputs (inputField) {
 function bindListeners () {
     var inputField = document.getElementById("input");
 
+    // when users type into the search bar again, clear the current search
+    inputField.addEventListener("keypress", imageStore.clearImages);
+
     // clicking the search button
     document.getElementById("input-search").addEventListener("submit", function (e) {
         e.preventDefault();
