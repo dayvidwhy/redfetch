@@ -151,6 +151,7 @@ var imageStore = (function () {
                         };
                     };
                 })(image, largeResolution.url);
+
         
                 // if it fails to load delete the element
                 image.onerror = function () {
@@ -172,6 +173,7 @@ var imageStore = (function () {
                         return replaceHTMLEscape(currentImages.source.url);
                     }
                 })());
+                container.setAttribute("regular-image", replaceHTMLEscape(largeResolution.url));
                 container.setAttribute("title-text", titleText);
                 container.setAttribute("author", element.data.author);
                 container.appendChild(image);
@@ -284,6 +286,8 @@ var directionals = (function () {
 var overlay = (function () {
     var userButton = document.getElementById("overlay-user");
     var overlayContainer = document.getElementById("overlay");
+    var overlayTitle = document.getElementById("overlay-title");
+    var overlayImage = document.getElementById("overlay-image");
 
     // setup overlay handler for closing
     overlayContainer.onclick = function() {
@@ -305,9 +309,14 @@ var overlay = (function () {
             overlayContainer.style.display = "block";
 
             // set overlay properties
-            document.getElementById("overlay-title").innerHTML = imageContainer.getAttribute("title-text");
-            document.getElementById("overlay-image").alt = imageContainer.getAttribute("title-text");
-            document.getElementById("overlay-image").src = imageContainer.getAttribute("large-image");
+            overlayTitle.innerHTML = imageContainer.getAttribute("title-text");
+            overlayImage.alt = imageContainer.getAttribute("title-text");
+            overlayImage.src = imageContainer.getAttribute("regular-image");
+            overlayImage.onload = (function (_imageContainer) {
+                return function () {
+                    overlayImage.src = _imageContainer.getAttribute("large-image");
+                }
+            })(imageContainer);
 
             // set author on the overlay button
             var author = imageContainer.getAttribute("author");
