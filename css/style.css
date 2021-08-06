@@ -327,6 +327,9 @@ form select:hover {
     header {
         width: 100%;
     }
+    .row {
+        margin-bottom: 2px;
+    }
     #overlay-inner {
         width: 100%;
     }
