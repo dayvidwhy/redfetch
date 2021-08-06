@@ -122,18 +122,17 @@ var imageStore = (function () {
                 var currentResolutions = currentImages.resolutions;
                 var largeResolution = currentResolutions[Math.floor(currentResolutions.length - 1 / 2)];
                 var aspect = largeResolution.width / largeResolution.height;
-        
+
                 // create the image
                 var image = new Image();
-                var thumbnail = replaceHTMLEscape(currentImages.resolutions[0].url);
-                image.src = thumbnail;
+                image.src = replaceHTMLEscape(currentImages.resolutions[0].url);
                 image.className = "image-loading";
                 image.alt = titleText;
 
                 /*
-                * When the thumbnail loads change its source to the larger image.
+                * When the small image loads change its source to the larger image.
                 * This will cause a network request to start and the user can view the
-                * blurry thumbnail until it's done.
+                * blurry small image until it's done.
                 */
                 image.onload = (function (_image, _largeResolution) {
                     return function () {
