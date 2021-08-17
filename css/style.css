@@ -226,7 +226,7 @@ img {
     font-size: 1.5em;
 }
 
-#overlay-user-outer {
+.overlay-user-outer {
     display: block;
     text-align: center;
 }
