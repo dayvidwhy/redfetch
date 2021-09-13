@@ -238,6 +238,9 @@ var directionals = (function () {
         var newElement, newRow, sibling, child;
         var key = e.which || e.keyCode;
 
+        // exit early if not left or right
+        if (key !== 37 && key !== 39) return;
+
         // which key?
         if (key === 37) {
             // hit left
@@ -247,9 +250,6 @@ var directionals = (function () {
             // pressed right
             sibling = "nextSibling";
             child = "firstChild";
-        } else {
-            // exit early if not one of those
-            return;
         }
 
         newElement = currentContainer[sibling];
