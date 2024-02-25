@@ -28,6 +28,42 @@ function getSearchUrl () {
     }
 }
 
+// Depending on the content hosting site, extract the main content URL
+function getContentInfo (element) {
+    // It's an imgur hosted resource
+    if (element.data.domain === "i.imgur.com") {
+        if (element.data.url.indexOf(".gifv") >= 0) {
+            return {
+                contentUrl:  replaceHTMLEscape(element.data.url).substring(0, element.data.url.length - 4) + "mp4",
+                contentType: "video"
+            };
+        } else if (element.data.url.indexOf(".gif") >= 0) {
+            return {
+                contentUrl: element.data.url,
+                contentType: "image"
+            };
+        }
+    // i.redd.it hosted resource
+    } else if (element.data.domain === "i.redd.it") {
+        if (element.data.url.indexOf(".gifv") >= 0) {
+            return {
+                contentUrl: replaceHTMLEscape(element.data.url).substring(0, element.data.url.length - 4) + "mp4",
+                contentType: "video"
+            };
+        } else if (element.data.url.indexOf(".gif") >= 0) {
+            return {
+                contentUrl: replaceHTMLEscape(element.data.preview.images[0].variants.mp4.source.url),
+                contentType: "video"
+            };
+        }
+    // it's something plain
+    }
+    return {
+        contentUrl: replaceHTMLEscape(element.data.preview.images[0].source.url),
+        contentType: "image"
+    };
+}
+
 // Initiate our Reddit request
 function fetchRedditImages () {
     loader.message("Loading...");
@@ -145,7 +181,7 @@ var imageStore = (function () {
 
                             // Clicking the image shows the overlay
                             this.parentElement.onclick = function () {
-                                overlay.displayImage(this);
+                                overlay.displayContent(this);
                             }
                         };
                     };
@@ -162,15 +198,9 @@ var imageStore = (function () {
                 // let's our images be tiled
                 container.style.flex = aspect;
                 // set the large image for our overlay
-                container.setAttribute("large-image", (function () {
-                    if (element.data.url.indexOf(".gifv") > 0) {
-                        // it's an imgur gifv image
-                        return element.data.url.substring(0, element.data.url.length - 1);
-                    } else {
-                        // it's something plain, or gyfcat
-                        return replaceHTMLEscape(currentImages.source.url);
-                    }
-                })());
+                var contentInfo = getContentInfo(element);
+                container.setAttribute("content-type", contentInfo.contentType);
+                container.setAttribute("large-image", contentInfo.contentUrl);
                 container.setAttribute("regular-image", replaceHTMLEscape(largeResolution.url));
                 container.setAttribute("title-text", titleText);
                 container.setAttribute("author", element.data.author);
@@ -256,13 +286,13 @@ var directionals = (function () {
         if (newElement) {
             // found next element right away
             currentContainer = newElement;
-            overlay.displayImage(currentContainer);
+            overlay.displayContent(currentContainer);
         } else {
             // we need to go up and into the previous row
             newRow = currentContainer.parentElement[sibling];
             if (newRow) {
                 currentContainer = newRow[child];
-                overlay.displayImage(currentContainer);
+                overlay.displayContent(currentContainer);
             }
         }
     }
@@ -286,6 +316,7 @@ var overlay = (function () {
     var overlayContainer = document.getElementById("overlay");
     var overlayTitle = document.getElementById("overlay-title");
     var overlayImage = document.getElementById("overlay-image");
+    var overlayVideo = document.getElementById("overlay-video");
 
     // setup overlay handler for closing
     overlayContainer.onclick = function() {
@@ -298,26 +329,37 @@ var overlay = (function () {
 
     return {
         // For the overlay element, extract it's data attributes.
-        displayImage (imageContainer) {
+        displayContent (content) {
             // enable arrow navigation
             directionals.bindArrowKeys();
-            directionals.setCurrentContainer(imageContainer);
+            directionals.setCurrentContainer(content);
 
             // display the overlay
             overlayContainer.style.display = "block";
 
             // set overlay properties
-            overlayTitle.innerHTML = imageContainer.getAttribute("title-text");
-            overlayImage.alt = imageContainer.getAttribute("title-text");
-            overlayImage.src = imageContainer.getAttribute("regular-image");
-            overlayImage.onload = (function (_imageContainer) {
-                return function () {
-                    overlayImage.src = _imageContainer.getAttribute("large-image");
-                }
-            })(imageContainer);
+            overlayTitle.innerHTML = content.getAttribute("title-text");
+            if (content.getAttribute("content-type") === "video") { // vid
+                overlayVideo.alt = content.getAttribute("title-text");
+                overlayVideo.src = content.getAttribute("large-image");
+                overlayVideo.poster = content.getAttribute("regular-image");
+
+                overlayVideo.style.display = "block";
+                overlayImage.style.display = "none";
+            } else { // img
+                overlayImage.alt = content.getAttribute("title-text");
+                overlayImage.src = content.getAttribute("regular-image");
+                overlayVideo.style.display = "none";
+                overlayImage.style.display = "block";
+                overlayImage.onload = (function (_content) {
+                    return function () {
+                        overlayImage.src = _content.getAttribute("large-image");
+                    }
+                })(content);
+            }
 
             // set author on the overlay button
-            var author = imageContainer.getAttribute("author");
+            var author = content.getAttribute("author");
             userButton.setAttribute("author", author);
             userButton.innerHTML = "By /user/" + author;
 

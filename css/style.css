@@ -139,7 +139,7 @@ a:visited, a:hover {
     margin-right: 0;
 }
 
-img {
+img, video {
     width: 100%;
 }
 
@@ -209,12 +209,13 @@ img {
     padding: 2em;
 }
 
-#overlay-image {
+#overlay-image, #overlay-video {
     width: auto;
     max-height:100%;
     max-width:100%;
     display: inline-block;
     box-shadow: none;
+    margin: auto;
 }
 
 #overlay-title {
