@@ -30,34 +30,31 @@ function getSearchUrl () {
 
 // Depending on the content hosting site, extract the main content URL
 function getContentInfo (element) {
-    // It's an imgur hosted resource
-    if (element.data.domain === "i.imgur.com") {
-        if (element.data.url.indexOf(".gifv") >= 0) {
-            return {
-                contentUrl:  replaceHTMLEscape(element.data.url).substring(0, element.data.url.length - 4) + "mp4",
-                contentType: "video"
-            };
-        } else if (element.data.url.indexOf(".gif") >= 0) {
+    // check if it has a video preview
+    if (element.data.preview.reddit_video_preview !== undefined) {
+        return {
+            contentUrl: replaceHTMLEscape(element.data.preview.reddit_video_preview.fallback_url),
+            contentType: "video"
+        }
+    }
+
+    if (element.data.url.indexOf(".gif") >= 0) {
+        // It's an imgur hosted resource
+        if (element.data.domain === "i.imgur.com") {
             return {
                 contentUrl: element.data.url,
                 contentType: "image"
             };
         }
-    // i.redd.it hosted resource
-    } else if (element.data.domain === "i.redd.it") {
-        if (element.data.url.indexOf(".gifv") >= 0) {
-            return {
-                contentUrl: replaceHTMLEscape(element.data.url).substring(0, element.data.url.length - 4) + "mp4",
-                contentType: "video"
-            };
-        } else if (element.data.url.indexOf(".gif") >= 0) {
+        // i.redd.it hosted resource
+        if (element.data.domain === "i.redd.it") {
             return {
                 contentUrl: replaceHTMLEscape(element.data.preview.images[0].variants.mp4.source.url),
                 contentType: "video"
             };
         }
-    // it's something plain
     }
+
     return {
         contentUrl: replaceHTMLEscape(element.data.preview.images[0].source.url),
         contentType: "image"
